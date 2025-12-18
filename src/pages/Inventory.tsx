@@ -24,9 +24,9 @@ const Inventory = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <PhoneFrame>
-        <div className="h-full flex flex-col pt-12 pb-8 px-6">
+        <div className="h-full flex flex-col pt-14 pb-10 px-7">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-8">
             <button 
               onClick={() => navigate('/scan')}
               className="w-10 h-10 rounded-full bg-card flex items-center justify-center shadow-card"
@@ -35,22 +35,22 @@ const Inventory = () => {
             </button>
             <div className="flex-1">
               <h1 className="text-xl font-bold font-display text-foreground">Your Inventory</h1>
-              <p className="text-sm text-muted-foreground">{items.length} items detected</p>
+              <p className="text-sm text-muted-foreground mt-1">{items.length} items detected</p>
             </div>
           </div>
 
           {/* AI Question */}
           {showQuestion && !pianoAnswer && (
-            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-4 h-4 text-primary-foreground" />
+            <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 mb-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-foreground mb-3">
+                  <p className="font-medium text-foreground mb-4">
                     I detected a Grand Piano. Is it on the ground floor?
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <Button 
                       size="sm" 
                       variant="outline"
@@ -74,39 +74,39 @@ const Inventory = () => {
           )}
 
           {pianoAnswer === 'upper' && (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 mb-4 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0" />
+            <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 mb-6 flex items-start gap-4">
+              <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-foreground text-sm">Hydraulic lift required</p>
-                <p className="text-xs text-muted-foreground">Special equipment will be arranged</p>
+                <p className="text-xs text-muted-foreground mt-1">Special equipment will be arranged</p>
               </div>
             </div>
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="bg-card rounded-xl p-3 text-center shadow-card">
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="bg-card rounded-xl p-4 text-center shadow-card">
               <p className="text-2xl font-bold text-primary">{totalVolume}</p>
-              <p className="text-xs text-muted-foreground">Total ft³</p>
+              <p className="text-xs text-muted-foreground mt-1">Total ft³</p>
             </div>
-            <div className="bg-card rounded-xl p-3 text-center shadow-card">
+            <div className="bg-card rounded-xl p-4 text-center shadow-card">
               <p className="text-2xl font-bold text-destructive">{fragileCount}</p>
-              <p className="text-xs text-muted-foreground">Fragile</p>
+              <p className="text-xs text-muted-foreground mt-1">Fragile</p>
             </div>
-            <div className="bg-card rounded-xl p-3 text-center shadow-card">
+            <div className="bg-card rounded-xl p-4 text-center shadow-card">
               <p className="text-2xl font-bold text-accent">{specialCount}</p>
-              <p className="text-xs text-muted-foreground">Special</p>
+              <p className="text-xs text-muted-foreground mt-1">Special</p>
             </div>
           </div>
 
           {/* Items List */}
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-3">
             {items.map((item, i) => (
               <div 
                 key={i}
-                className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-card"
+                className="flex items-center gap-4 p-4 bg-card rounded-xl shadow-card"
               >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${
                   item.special ? 'gradient-primary' : item.highValue ? 'gradient-accent' : 'bg-muted'
                 }`}>
                   <item.icon className={`w-5 h-5 ${
@@ -114,20 +114,20 @@ const Inventory = () => {
                   }`} />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-medium text-foreground">{item.name}</p>
                     {item.fragile && (
-                      <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-medium">
                         FRAGILE
                       </span>
                     )}
                     {item.highValue && (
-                      <span className="text-[10px] bg-accent/20 text-accent-foreground px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] bg-accent/20 text-accent-foreground px-1.5 py-0.5 rounded font-medium">
                         HIGH VALUE
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">{item.category} • {item.volume}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{item.category} • {item.volume}</p>
                 </div>
                 <Check className="w-5 h-5 text-accent" />
               </div>
@@ -136,7 +136,7 @@ const Inventory = () => {
 
           <Button 
             onClick={() => navigate('/quote')}
-            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity mt-4"
+            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity mt-6"
           >
             Get Instant Quote
             <ChevronRight className="w-5 h-5 ml-2" />
