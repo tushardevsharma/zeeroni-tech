@@ -79,11 +79,11 @@ const Complete = () => {
             </p>
           </div>
 
-          {/* AI Concierge */}
+          {/* Smart Concierge */}
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-foreground">AI Concierge</h3>
+              <h3 className="font-semibold text-foreground">Smart Concierge</h3>
               <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
                 New in Indiranagar
               </span>

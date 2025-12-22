@@ -134,7 +134,7 @@ const Verification = () => {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">Report Damage?</p>
-              <p className="text-xs text-muted-foreground">AI will compare with pre-move photos</p>
+              <p className="text-xs text-muted-foreground">We'll compare with pre-move photos</p>
             </div>
             <Button variant="outline" size="sm">
               Report

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { Sparkles, Shield, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PhoneFrame from '@/components/PhoneFrame';
+import zeeroniLogo from '@/assets/zeeroni-logo.png';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -14,15 +15,13 @@ const Landing = () => {
           {/* Hero Section */}
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-10">
-              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-lg">
-                <Package className="w-8 h-8 text-primary-foreground" />
-              </div>
+              <img src={zeeroniLogo} alt="Zeeroni" className="h-14 mb-8" />
               <h1 className="text-4xl font-bold font-display text-foreground mb-5 leading-tight">
-                <span className="text-primary">Zeeroni</span>
-                <span className="block text-2xl mt-2 font-medium text-foreground/80">Moving Made Intelligent</span>
+                Moving Made
+                <span className="block text-primary">Intelligent</span>
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                AI-powered relocation that gives you peace of mind. No surveyors, no surprises.
+                Smart relocation that gives you peace of mind. No surveyors, no surprises.
               </p>
             </div>
 
@@ -33,7 +32,7 @@ const Landing = () => {
                   <Sparkles className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground text-base">AI Inventory Scan</h3>
+                  <h3 className="font-semibold text-foreground text-base">Smart Inventory Scan</h3>
                   <p className="text-sm text-muted-foreground mt-1">Point your camera, get instant quotes</p>
                 </div>
               </div>
