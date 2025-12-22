@@ -41,31 +41,31 @@ const Inventory = () => {
 
           {/* Smart Question */}
           {showQuestion && !pianoAnswer && (
-            <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 mb-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-primary-foreground" />
+            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-foreground mb-4">
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground text-sm mb-3">
                     I detected a Grand Piano. Is it on the ground floor?
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <Button 
                       size="sm" 
                       variant="outline"
                       onClick={() => setPianoAnswer('ground')}
-                      className="flex-1"
+                      className="flex-1 text-xs px-2"
                     >
-                      Yes, Ground Floor
+                      Yes, Ground
                     </Button>
                     <Button 
                       size="sm"
                       variant="outline"
                       onClick={() => setPianoAnswer('upper')}
-                      className="flex-1"
+                      className="flex-1 text-xs px-2"
                     >
-                      No, Upper Floor
+                      No, Upper
                     </Button>
                   </div>
                 </div>
