@@ -49,19 +49,17 @@ const Login = () => {
                   We'll send you a 6-digit code to verify your number
                 </p>
 
-                <div className="space-y-5">
-                  <div className="flex gap-4">
-                    <div className="w-20 h-14 bg-card rounded-xl flex items-center justify-center border border-border text-foreground font-medium">
-                      +91
-                    </div>
-                    <Input
-                      type="tel"
-                      placeholder="Phone number"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      className="flex-1 h-14 text-lg bg-card border-border"
-                    />
+                <div className="flex gap-3">
+                  <div className="w-16 h-14 bg-card rounded-xl flex items-center justify-center border border-border text-foreground font-medium flex-shrink-0">
+                    +91
                   </div>
+                  <Input
+                    type="tel"
+                    placeholder="Phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    className="flex-1 h-14 text-lg bg-card border-border min-w-0"
+                  />
                 </div>
               </>
             ) : (
@@ -73,7 +71,7 @@ const Login = () => {
                   Enter the code sent to +91 {phone}
                 </p>
 
-                <div className="flex gap-3 mb-6">
+                <div className="flex gap-2 mb-6 w-full">
                   {[...Array(6)].map((_, i) => (
                     <Input
                       key={i}
@@ -88,7 +86,7 @@ const Login = () => {
                           (e.target.nextElementSibling as HTMLInputElement).focus();
                         }
                       }}
-                      className="w-12 h-14 text-center text-xl font-semibold bg-card border-border"
+                      className="flex-1 min-w-0 h-12 text-center text-lg font-semibold bg-card border-border px-0"
                     />
                   ))}
                 </div>

@@ -124,7 +124,7 @@ const AddressInput = () => {
           <Button 
             onClick={() => navigate('/scan')}
             disabled={!origin || !destination}
-            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 mt-6"
           >
             Continue to Smart Scan
           </Button>
