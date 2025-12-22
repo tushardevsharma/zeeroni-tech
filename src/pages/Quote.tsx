@@ -46,7 +46,7 @@ const Quote = () => {
             </button>
             <div className="flex-1">
               <h1 className="text-xl font-bold font-display text-foreground">Your Quote</h1>
-              <p className="text-sm text-muted-foreground mt-1">AI-calculated pricing</p>
+              <p className="text-sm text-muted-foreground mt-1">Intelligent pricing</p>
             </div>
           </div>
 

@@ -33,7 +33,7 @@ const AddressInput = () => {
             Where are you moving?
           </h1>
           <p className="text-muted-foreground mb-6">
-            Our AI will auto-fill building details
+            Smart auto-fill for building details
           </p>
 
           <div className="flex-1 space-y-4">
@@ -67,7 +67,7 @@ const AddressInput = () => {
               <div className="bg-card rounded-xl shadow-card overflow-hidden">
                 <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-primary/5">
                   <Sparkles className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">AI Predictions</span>
+                  <span className="text-sm font-medium text-primary">Smart Predictions</span>
                 </div>
                 {predictions.map((pred, i) => (
                   <button
@@ -101,7 +101,7 @@ const AddressInput = () => {
               <div className="bg-card rounded-xl p-4 shadow-card">
                 <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
-                  AI-detected building info
+                  Detected building info
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="bg-muted rounded-lg p-3 text-center">
@@ -126,7 +126,7 @@ const AddressInput = () => {
             disabled={!origin || !destination}
             className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            Continue to AI Scan
+            Continue to Smart Scan
           </Button>
         </div>
       </PhoneFrame>

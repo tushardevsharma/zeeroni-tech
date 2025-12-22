@@ -113,11 +113,11 @@ const Schedule = () => {
             </div>
           </div>
 
-          {/* AI Packing Recommendation */}
+          {/* Smart Packing Recommendation */}
           <div className="flex-1 bg-card rounded-xl p-4 shadow-card">
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-foreground">AI Packing Kit</h3>
+              <h3 className="font-semibold text-foreground">Smart Packing Kit</h3>
               <span className="text-xs bg-accent/20 text-accent-foreground px-2 py-0.5 rounded-full ml-auto">
                 Recommended
               </span>

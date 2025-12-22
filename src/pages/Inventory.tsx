@@ -39,7 +39,7 @@ const Inventory = () => {
             </div>
           </div>
 
-          {/* AI Question */}
+          {/* Smart Question */}
           {showQuestion && !pianoAnswer && (
             <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 mb-6">
               <div className="flex items-start gap-4">

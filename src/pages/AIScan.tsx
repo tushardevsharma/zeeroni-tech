@@ -122,7 +122,7 @@ const AIScan = () => {
                 <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h2 className="font-semibold text-foreground text-lg">AI Detection</h2>
+                <h2 className="font-semibold text-foreground text-lg">Smart Detection</h2>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">Total Volume</p>
