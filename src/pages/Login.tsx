@@ -101,7 +101,7 @@ const Login = () => {
           <Button 
             onClick={step === 'phone' ? handleSendOTP : handleVerify}
             disabled={step === 'phone' ? phone.length < 10 : otp.length < 6}
-            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 mt-6"
           >
             {step === 'phone' ? 'Send OTP' : 'Verify'}
           </Button>
