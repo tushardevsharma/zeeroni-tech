@@ -63,11 +63,14 @@ const Quote = () => {
             ) : (
               <>
                 <p className="text-sm text-muted-foreground mb-3">Total Estimate</p>
+                <p className="text-2xl text-muted-foreground line-through mb-1">
+                  ₹{(price * 2).toLocaleString()}
+                </p>
                 <p className="text-5xl font-bold font-display gradient-text mb-3">
                   ₹{price.toLocaleString()}
                 </p>
                 <p className="text-sm text-accent font-medium">
-                  ✓ 15% lower than market average
+                  ✓ 50% introductory discount applied
                 </p>
               </>
             )}
