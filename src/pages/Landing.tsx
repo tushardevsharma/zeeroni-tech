@@ -15,7 +15,8 @@ const Landing = () => {
           {/* Hero Section */}
           <div className="flex-1 flex flex-col justify-center">
             <div className="mb-10">
-              <img src={zeeroniLogo} alt="Zeeroni" className="h-14 mb-8" />
+              <img src={zeeroniLogo} alt="Zeeroni" className="h-14 mb-4" />
+              <p className="text-primary font-semibold text-lg mb-6">Zeeroni</p>
               <h1 className="text-4xl font-bold font-display text-foreground mb-5 leading-tight">
                 Moving Made
                 <span className="block text-primary">Intelligent</span>
