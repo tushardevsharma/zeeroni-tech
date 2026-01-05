@@ -156,17 +156,26 @@
   50% { transform: translateY(100%); opacity: 0.5; }
 }
 
-.phone-frame {
-  @apply relative mx-auto bg-foreground rounded-[3rem] p-3;
-  max-width: 390px;
-  box-shadow: 0 25px 50px -12px hsl(220 25% 10% / 0.25);
+/* Container utilities */
+.container-tight {
+  @apply max-w-4xl mx-auto;
 }
 
-.phone-screen {
-  @apply relative bg-background rounded-[2.5rem] overflow-hidden;
-  min-height: 780px;
+.container-wide {
+  @apply max-w-7xl mx-auto;
 }
 
-.phone-notch {
-  @apply absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-foreground rounded-b-2xl z-50;
+/* Section spacing */
+.section-padding {
+  @apply py-16 md:py-24 lg:py-32;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-soft hover:-translate-y-1;
+}
+
+/* Text balance */
+.text-balance {
+  text-wrap: balance;
 }
