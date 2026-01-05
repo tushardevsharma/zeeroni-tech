@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Package, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Package, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PhoneFrame from '@/components/PhoneFrame';
+import WebLayout from '@/components/layout/WebLayout';
 
 const Schedule = () => {
   const navigate = useNavigate();
@@ -34,124 +34,152 @@ const Schedule = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <PhoneFrame>
-        <div className="h-full flex flex-col pt-12 pb-8 px-6">
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-6">
-            <button 
-              onClick={() => navigate('/quote')}
-              className="w-10 h-10 rounded-full bg-card flex items-center justify-center shadow-card"
-            >
-              <ArrowLeft className="w-5 h-5 text-foreground" />
-            </button>
-            <div className="flex-1">
-              <h1 className="text-xl font-bold font-display text-foreground">Schedule Move</h1>
-              <p className="text-sm text-muted-foreground">Pick your date & time</p>
-            </div>
-          </div>
+    <WebLayout showSteps currentStep={4} className="py-8 md:py-12">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <button 
+            onClick={() => navigate('/quote')}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
+          </button>
 
-          {/* Date Selection */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-foreground">December 2024</h3>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {dates.map((d, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedDate(d.date)}
-                  className={`flex-shrink-0 w-16 rounded-xl p-3 text-center transition-all ${
-                    selectedDate === d.date 
-                      ? 'gradient-primary text-primary-foreground shadow-soft' 
-                      : 'bg-card shadow-card'
-                  }`}
-                >
-                  <p className={`text-xs ${selectedDate === d.date ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                    {d.day}
-                  </p>
-                  <p className="text-xl font-bold my-1">{d.date}</p>
-                  <p className={`text-[10px] ${
-                    d.discount ? 'text-accent' : d.peak ? 'text-destructive' : 'text-muted-foreground'
-                  } ${selectedDate === d.date ? 'text-primary-foreground/70' : ''}`}>
-                    {d.discount ? 'Save 10%' : d.peak ? 'Peak' : ''}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
+          <h1 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-2">
+            Schedule Your Move
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Pick your preferred date and time slot
+          </p>
+        </div>
 
-          {/* Time Selection */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-foreground">Time Slot</h3>
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Date & Time Selection */}
+          <div className="space-y-6">
+            {/* Date Selection */}
+            <div className="bg-card rounded-2xl p-6 shadow-card">
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-foreground text-lg">December 2024</h3>
+              </div>
+              <div className="grid grid-cols-7 gap-2">
+                {dates.map((d, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedDate(d.date)}
+                    className={`rounded-xl p-3 text-center transition-all ${
+                      selectedDate === d.date 
+                        ? 'gradient-primary text-primary-foreground shadow-soft' 
+                        : 'bg-muted hover:bg-muted/80'
+                    }`}
+                  >
+                    <p className={`text-xs ${selectedDate === d.date ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                      {d.day}
+                    </p>
+                    <p className="text-xl font-bold my-1">{d.date}</p>
+                    {(d.discount || d.peak) && (
+                      <p className={`text-[10px] font-medium ${
+                        selectedDate === d.date 
+                          ? 'text-primary-foreground/70' 
+                          : d.discount ? 'text-accent' : 'text-destructive'
+                      }`}>
+                        {d.discount ? 'Save 10%' : 'Peak'}
+                      </p>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              {timeSlots.map((slot, i) => (
-                <button
-                  key={i}
-                  onClick={() => slot.available && setSelectedTime(slot.time)}
-                  disabled={!slot.available}
-                  className={`p-3 rounded-xl text-left transition-all ${
-                    selectedTime === slot.time 
-                      ? 'gradient-primary text-primary-foreground shadow-soft' 
-                      : slot.available 
-                        ? 'bg-card shadow-card hover:bg-muted/50' 
-                        : 'bg-muted/50 opacity-50'
-                  }`}
-                >
-                  <p className="font-semibold">{slot.time}</p>
-                  <p className={`text-xs ${
-                    selectedTime === slot.time ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                  }`}>
-                    {slot.available ? slot.label : 'Unavailable'}
-                  </p>
-                </button>
-              ))}
+
+            {/* Time Selection */}
+            <div className="bg-card rounded-2xl p-6 shadow-card">
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-foreground text-lg">Time Slot</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {timeSlots.map((slot, i) => (
+                  <button
+                    key={i}
+                    onClick={() => slot.available && setSelectedTime(slot.time)}
+                    disabled={!slot.available}
+                    className={`p-4 rounded-xl text-left transition-all ${
+                      selectedTime === slot.time 
+                        ? 'gradient-primary text-primary-foreground shadow-soft' 
+                        : slot.available 
+                          ? 'bg-muted hover:bg-muted/80' 
+                          : 'bg-muted/50 opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    <p className="font-semibold text-lg">{slot.time}</p>
+                    <p className={`text-sm ${
+                      selectedTime === slot.time ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                    }`}>
+                      {slot.available ? slot.label : 'Unavailable'}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Smart Packing Recommendation */}
-          <div className="flex-1 bg-card rounded-xl p-4 shadow-card">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-foreground">Smart Packing Kit</h3>
-              <span className="text-xs bg-accent/20 text-accent-foreground px-2 py-0.5 rounded-full ml-auto">
+          <div className="bg-card rounded-2xl p-6 shadow-card h-fit">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h3 className="font-semibold text-foreground text-lg">Smart Packing Kit</h3>
+              <span className="text-xs bg-accent/20 text-accent-foreground px-2 py-1 rounded-full ml-auto">
                 Recommended
               </span>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Based on your inventory scan, we recommend:
+            <p className="text-muted-foreground mb-6">
+              Based on your inventory scan, we recommend the following materials:
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            
+            <div className="grid grid-cols-2 gap-3 mb-6">
               {packingKit.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted rounded-lg p-2">
-                  <Package className="w-4 h-4 text-muted-foreground" />
+                <div key={i} className="flex items-center gap-3 bg-muted rounded-xl p-4">
+                  <Package className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <p className="text-xs font-medium text-foreground">{item.item}</p>
-                    <p className="text-xs text-muted-foreground">{item.qty}</p>
+                    <p className="font-medium text-foreground">{item.item}</p>
+                    <p className="text-sm text-muted-foreground">{item.qty}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-2 mt-3 p-2 bg-accent/10 rounded-lg">
-              <CheckCircle2 className="w-4 h-4 text-accent" />
-              <span className="text-xs text-foreground">Kit included in your quote</span>
+            
+            <div className="flex items-center gap-3 p-4 bg-accent/10 rounded-xl border border-accent/20">
+              <CheckCircle2 className="w-5 h-5 text-accent" />
+              <span className="text-foreground font-medium">Kit included in your quote</span>
             </div>
-          </div>
 
+            {/* Summary */}
+            {selectedDate && selectedTime && (
+              <div className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/20">
+                <p className="text-sm text-muted-foreground mb-2">Your Move</p>
+                <p className="text-lg font-semibold text-foreground">
+                  December {selectedDate}, 2024 at {selectedTime}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        <div className="mt-8">
           <Button 
             onClick={() => navigate('/tracking')}
             disabled={!selectedDate || !selectedTime}
-            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity mt-4 disabled:opacity-50"
+            size="lg"
+            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             Confirm Booking
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
-      </PhoneFrame>
-    </div>
+      </div>
+    </WebLayout>
   );
 };
 

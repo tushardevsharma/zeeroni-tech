@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Building2, Sparkles, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, Building2, Sparkles, ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import PhoneFrame from '@/components/PhoneFrame';
+import WebLayout from '@/components/layout/WebLayout';
 
 const AddressInput = () => {
   const navigate = useNavigate();
@@ -18,53 +18,51 @@ const AddressInput = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <PhoneFrame>
-        <div className="h-full flex flex-col pt-12 pb-8 px-6">
-          {/* Header */}
+    <WebLayout showSteps currentStep={0} className="py-8 md:py-12">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
           <button 
             onClick={() => navigate('/login')}
-            className="w-10 h-10 rounded-full bg-card flex items-center justify-center mb-6 shadow-card"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
           >
-            <ArrowLeft className="w-5 h-5 text-foreground" />
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
           </button>
 
-          <h1 className="text-2xl font-bold font-display text-foreground mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold font-display text-foreground mb-3">
             Where are you moving?
           </h1>
-          <p className="text-muted-foreground mb-6">
-            Smart auto-fill for building details
+          <p className="text-lg text-muted-foreground">
+            Enter your addresses and we'll auto-fill building details with AI.
           </p>
+        </div>
 
-          <div className="flex-1 space-y-4">
-            {/* Origin */}
-            <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary" />
-              <Input
-                placeholder="From: Origin address"
-                value={origin}
-                onChange={(e) => {
-                  setOrigin(e.target.value);
-                  setShowPredictions(e.target.value.length > 2);
-                }}
-                className="h-14 pl-10 pr-4 text-base bg-card border-border"
-              />
+        {/* Address Form */}
+        <div className="bg-card rounded-2xl shadow-card p-6 md:p-8 mb-6">
+          <div className="space-y-6">
+            {/* Origin Address */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Moving From
+              </label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary" />
+                <Input
+                  placeholder="Enter origin address"
+                  value={origin}
+                  onChange={(e) => {
+                    setOrigin(e.target.value);
+                    setShowPredictions(e.target.value.length > 2);
+                  }}
+                  className="h-14 pl-10 pr-4 text-lg bg-background border-border"
+                />
+              </div>
             </div>
 
-            {/* Destination */}
-            <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent" />
-              <Input
-                placeholder="To: Destination address"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                className="h-14 pl-10 pr-4 text-base bg-card border-border"
-              />
-            </div>
-
-            {/* AI Predictions */}
+            {/* AI Predictions Dropdown */}
             {showPredictions && (
-              <div className="bg-card rounded-xl shadow-card overflow-hidden">
+              <div className="bg-background rounded-xl border border-border overflow-hidden -mt-2">
                 <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-primary/5">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium text-primary">Smart Predictions</span>
@@ -76,13 +74,13 @@ const AddressInput = () => {
                       setOrigin(pred.address);
                       setShowPredictions(false);
                     }}
-                    className="w-full flex items-center gap-3 p-4 hover:bg-muted/50 transition-colors border-b border-border last:border-0"
+                    className="w-full flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors border-b border-border last:border-0"
                   >
                     <MapPin className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                     <div className="flex-1 text-left">
                       <p className="font-medium text-foreground">{pred.address}</p>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                        <Building2 className="w-3 h-3" />
+                      <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                        <Building2 className="w-4 h-4" />
                         <span>{pred.floor}</span>
                         <span>•</span>
                         <span>Lift: {pred.elevator}</span>
@@ -90,47 +88,66 @@ const AddressInput = () => {
                         <span>Parking: {pred.parking}</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Selected Address Details */}
-            {origin && !showPredictions && (
-              <div className="bg-card rounded-xl p-4 shadow-card">
-                <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  Detected building info
-                </h3>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Floor</p>
-                    <p className="font-semibold text-foreground">3rd</p>
-                  </div>
-                  <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Elevator</p>
-                    <p className="font-semibold text-accent">Yes</p>
-                  </div>
-                  <div className="bg-muted rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Parking</p>
-                    <p className="font-semibold text-foreground">Street</p>
-                  </div>
-                </div>
+            {/* Destination Address */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Moving To
+              </label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent" />
+                <Input
+                  placeholder="Enter destination address"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  className="h-14 pl-10 pr-4 text-lg bg-background border-border"
+                />
               </div>
-            )}
+            </div>
           </div>
-
-          <Button 
-            onClick={() => navigate('/scan')}
-            disabled={!origin || !destination}
-            className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50 mt-6"
-          >
-            Continue to Smart Scan
-          </Button>
         </div>
-      </PhoneFrame>
-    </div>
+
+        {/* Detected Building Info */}
+        {origin && !showPredictions && (
+          <div className="bg-card rounded-2xl shadow-card p-6 md:p-8 mb-6">
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              Detected Building Information
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-muted rounded-xl p-4 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Floor</p>
+                <p className="text-xl font-bold text-foreground">3rd</p>
+              </div>
+              <div className="bg-muted rounded-xl p-4 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Elevator</p>
+                <p className="text-xl font-bold text-accent">Yes</p>
+              </div>
+              <div className="bg-muted rounded-xl p-4 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Parking</p>
+                <p className="text-xl font-bold text-foreground">Street</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Continue Button */}
+        <Button 
+          onClick={() => navigate('/scan')}
+          disabled={!origin || !destination}
+          size="lg"
+          className="w-full h-14 text-lg font-semibold gradient-primary hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          Continue to Smart Scan
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+      </div>
+    </WebLayout>
   );
 };
 
