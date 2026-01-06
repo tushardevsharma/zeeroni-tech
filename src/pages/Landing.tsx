@@ -119,76 +119,140 @@ const Landing = () => {
               </div>
             </div>
             
-            {/* Hero Visual */}
+            {/* Hero Visual - Phone Mockup with App Interface */}
             <div className="relative hidden lg:block">
-              <div className="relative bg-card rounded-3xl shadow-card p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center">
-                    <Truck className="w-7 h-7 text-primary-foreground" />
+              {/* Glowing background effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-3xl rounded-full scale-150 opacity-50" />
+              
+              {/* Phone Mockup */}
+              <div className="relative mx-auto w-[280px]">
+                {/* Phone Frame */}
+                <div className="relative bg-foreground rounded-[3rem] p-3 shadow-2xl">
+                  {/* Screen */}
+                  <div className="bg-background rounded-[2.5rem] overflow-hidden">
+                    {/* Status Bar */}
+                    <div className="bg-muted px-6 py-2 flex justify-between items-center text-xs text-muted-foreground">
+                      <span>9:41</span>
+                      <div className="flex gap-1">
+                        <div className="w-4 h-2 bg-muted-foreground/50 rounded-sm" />
+                        <div className="w-4 h-2 bg-muted-foreground/50 rounded-sm" />
+                        <div className="w-6 h-2 bg-accent rounded-sm" />
+                      </div>
+                    </div>
+                    
+                    {/* App Content */}
+                    <div className="p-4 space-y-4">
+                      {/* Header */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Welcome back</p>
+                          <p className="font-semibold text-foreground">Priya's Move</p>
+                        </div>
+                        <div className="w-8 h-8 gradient-primary rounded-full flex items-center justify-center">
+                          <span className="text-xs text-primary-foreground font-bold">P</span>
+                        </div>
+                      </div>
+                      
+                      {/* Progress Card */}
+                      <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-4 text-primary-foreground">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Truck className="w-5 h-5" />
+                          <span className="text-sm font-medium">Move in Progress</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <div>
+                            <p className="text-2xl font-bold">78%</p>
+                            <p className="text-xs opacity-80">Complete</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold">ETA 2:30 PM</p>
+                            <p className="text-xs opacity-80">On Schedule</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Quick Stats */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-muted rounded-xl p-3">
+                          <Camera className="w-4 h-4 text-primary mb-1" />
+                          <p className="text-lg font-bold text-foreground">24</p>
+                          <p className="text-xs text-muted-foreground">Items Scanned</p>
+                        </div>
+                        <div className="bg-muted rounded-xl p-3">
+                          <Shield className="w-4 h-4 text-accent mb-1" />
+                          <p className="text-lg font-bold text-foreground">100%</p>
+                          <p className="text-xs text-muted-foreground">Verified</p>
+                        </div>
+                      </div>
+                      
+                      {/* Live Tracking Preview */}
+                      <div className="bg-muted rounded-xl p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-foreground">Live Location</span>
+                          <span className="text-xs text-accent font-medium flex items-center gap-1">
+                            <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                            Live
+                          </span>
+                        </div>
+                        <div className="h-16 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-lg flex items-center justify-center relative overflow-hidden">
+                          <div className="absolute inset-0 flex items-center px-3">
+                            <div className="w-2 h-2 bg-primary rounded-full" />
+                            <div className="flex-1 h-0.5 bg-gradient-to-r from-primary via-accent to-primary/30 mx-1" />
+                            <Truck className="w-4 h-4 text-accent" />
+                            <div className="flex-1 h-0.5 bg-muted mx-1" />
+                            <MapPin className="w-3 h-3 text-muted-foreground" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Notch */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-foreground rounded-b-2xl" />
+              </div>
+              
+              {/* Floating Tech Badges */}
+              <div className="absolute -top-6 -left-12 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Camera className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground text-lg">Your Move</h3>
-                    <p className="text-sm text-muted-foreground">Dec 24, 2024</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 bg-muted rounded-xl">
-                    <div className="w-3 h-3 rounded-full bg-primary" />
-                    <div className="flex-1">
-                      <p className="text-sm text-muted-foreground">From</p>
-                      <p className="font-medium text-foreground">Indiranagar, Bangalore</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 bg-muted rounded-xl">
-                    <div className="w-3 h-3 rounded-full bg-accent" />
-                    <div className="flex-1">
-                      <p className="text-sm text-muted-foreground">To</p>
-                      <p className="font-medium text-foreground">HSR Layout, Bangalore</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Estimated Quote</p>
-                      <p className="text-2xl font-bold gradient-text">₹24,500</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Items</p>
-                      <p className="text-2xl font-bold text-foreground">24</p>
-                    </div>
+                    <p className="text-xs font-semibold text-foreground">Smart Scan</p>
+                    <p className="text-[10px] text-muted-foreground">Instant inventory</p>
                   </div>
                 </div>
               </div>
               
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft animate-float">
+              <div className="absolute top-20 -right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.3s' }}>
                 <div className="flex items-center gap-2">
-                  <Camera className="w-4 h-4" />
-                  <span className="font-semibold text-sm text-primary-foreground">Smart Scanning...</span>
+                  <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
+                    <Users className="w-4 h-4 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground">Crew GPS</p>
+                    <p className="text-[10px] text-muted-foreground">Real-time tracking</p>
+                  </div>
                 </div>
               </div>
               
-              <div className="absolute top-1/3 -right-8 bg-accent text-accent-foreground rounded-2xl px-4 py-3 shadow-soft animate-float" style={{ animationDelay: '0.5s' }}>
+              <div className="absolute bottom-20 -left-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  <span className="font-semibold text-sm">Crew Tracking</span>
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <FileCheck className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground">Digital Manifest</p>
+                    <p className="text-[10px] text-muted-foreground">Tamper-proof</p>
+                  </div>
                 </div>
               </div>
               
-              <div className="absolute -bottom-4 -right-4 bg-card rounded-2xl px-4 py-3 shadow-card">
+              <div className="absolute -bottom-4 -right-8 bg-gradient-to-r from-accent to-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft">
                 <div className="flex items-center gap-2">
-                  <FileCheck className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Digital Manifest</span>
-                </div>
-              </div>
-              
-              <div className="absolute bottom-1/4 -left-8 bg-card rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '1s' }}>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-accent" />
-                  <span className="text-sm font-medium text-foreground">Immutable Record</span>
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Zero Hassle</span>
                 </div>
               </div>
             </div>
