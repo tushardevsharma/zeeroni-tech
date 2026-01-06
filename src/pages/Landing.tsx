@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Shield, ArrowRight, Truck, MapPin, Camera, CheckCircle2, Star } from 'lucide-react';
+import { Sparkles, Shield, ArrowRight, Truck, MapPin, Camera, CheckCircle2, Star, FileCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import WebLayout from '@/components/layout/WebLayout';
 import zeeroniLogo from '@/assets/zeeroni-logo.png';
+import { toast } from 'sonner';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -11,8 +12,8 @@ const Landing = () => {
   const features = [
     {
       icon: Camera,
-      title: 'AI-Powered Inventory',
-      description: 'Point your camera at any room. Our AI instantly identifies and catalogs every item for accurate quotes.',
+      title: 'Intelligent Inventory',
+      description: 'Point your camera at any room. Our tech instantly identifies and catalogs every item for accurate quotes.',
     },
     {
       icon: Shield,
@@ -32,17 +33,17 @@ const Landing = () => {
   ];
 
   const steps = [
-    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to' },
-    { number: '02', title: 'Scan Your Items', description: 'Use AI to catalog your inventory instantly' },
-    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing' },
-    { number: '04', title: 'Schedule & Track', description: 'Book your move and track in real-time' },
+    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to', screenshot: '/screenshots/address.png' },
+    { number: '02', title: 'Scan Your Items', description: 'Use intelligent tech to catalog your inventory', screenshot: '/screenshots/scan.png' },
+    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing', screenshot: '/screenshots/quote.png' },
+    { number: '04', title: 'Schedule & Track', description: 'Book your move and track in real-time', screenshot: '/screenshots/tracking.png' },
   ];
 
   const testimonials = [
     {
       name: 'Priya Sharma',
       role: 'Moved from Mumbai to Bangalore',
-      quote: 'Zeeroni made our interstate move completely stress-free. The AI scan was incredibly accurate!',
+      quote: 'Zeeroni made our interstate move completely stress-free. The intelligent scan was incredibly accurate!',
       rating: 5,
     },
     {
@@ -74,7 +75,7 @@ const Landing = () => {
             <div className="text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">AI-Powered Moving</span>
+                <span className="text-sm font-medium text-primary">Intelligent Moving</span>
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
@@ -84,12 +85,12 @@ const Landing = () => {
               
               <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
                 Smart relocation that gives you peace of mind. No surveyors, no surprises. 
-                Just seamless, transparent moving powered by AI.
+                Just seamless, transparent moving powered by intelligent technology.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button 
-                  onClick={() => navigate('/login')}
+                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
                   size="lg"
                   className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
                 >
@@ -99,7 +100,8 @@ const Landing = () => {
                 <Button 
                   variant="outline"
                   size="lg"
-                  className="text-lg font-semibold px-8 py-6"
+                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
+                  onClick={() => navigate('/login')}
                 >
                   Watch Demo
                 </Button>
@@ -162,23 +164,31 @@ const Landing = () => {
               </div>
               
               {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-accent text-accent-foreground rounded-2xl px-4 py-3 shadow-soft animate-float">
+              <div className="absolute -top-4 -left-4 bg-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft animate-float">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  <span className="font-semibold text-sm">AI Scanning...</span>
+                  <Camera className="w-4 h-4" />
+                  <span className="font-semibold text-sm text-primary-foreground">Smart Scanning...</span>
+                </div>
+              </div>
+              
+              <div className="absolute top-1/3 -right-8 bg-accent text-accent-foreground rounded-2xl px-4 py-3 shadow-soft animate-float" style={{ animationDelay: '0.5s' }}>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span className="font-semibold text-sm">Crew Tracking</span>
                 </div>
               </div>
               
               <div className="absolute -bottom-4 -right-4 bg-card rounded-2xl px-4 py-3 shadow-card">
                 <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {['👨‍🔧', '👷', '🚚'].map((emoji, i) => (
-                      <div key={i} className="w-8 h-8 bg-muted rounded-full flex items-center justify-center border-2 border-card">
-                        {emoji}
-                      </div>
-                    ))}
-                  </div>
-                  <span className="text-sm font-medium text-foreground">Crew Ready</span>
+                  <FileCheck className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">Digital Manifest</span>
+                </div>
+              </div>
+              
+              <div className="absolute bottom-1/4 -left-8 bg-card rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '1s' }}>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-accent" />
+                  <span className="text-sm font-medium text-foreground">Immutable Record</span>
                 </div>
               </div>
             </div>
@@ -234,7 +244,22 @@ const Landing = () => {
                   {step.number}
                 </div>
                 <h3 className="font-semibold text-foreground text-xl mb-2">{step.title}</h3>
-                <p className="text-muted-foreground">{step.description}</p>
+                <p className="text-muted-foreground mb-4">{step.description}</p>
+                
+                {/* App Screenshot Placeholder */}
+                <div className="bg-muted rounded-xl aspect-[9/16] max-w-[180px] mx-auto overflow-hidden shadow-card">
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-primary/5 to-primary/10">
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 mx-auto mb-2 gradient-primary rounded-xl flex items-center justify-center">
+                        {index === 0 && <MapPin className="w-6 h-6 text-primary-foreground" />}
+                        {index === 1 && <Camera className="w-6 h-6 text-primary-foreground" />}
+                        {index === 2 && <CheckCircle2 className="w-6 h-6 text-primary-foreground" />}
+                        {index === 3 && <Truck className="w-6 h-6 text-primary-foreground" />}
+                      </div>
+                      <p className="text-xs text-muted-foreground">{step.title}</p>
+                    </div>
+                  </div>
+                </div>
                 
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-8 left-full w-full">
