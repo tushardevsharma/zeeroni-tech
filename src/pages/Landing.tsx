@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button';
 import WebLayout from '@/components/layout/WebLayout';
 import zeeroniLogo from '@/assets/zeeroni-logo.png';
 import { toast } from 'sonner';
+import addressScreenshot from '@/assets/screenshots/address.png';
+import scanScreenshot from '@/assets/screenshots/scan.png';
+import quoteScreenshot from '@/assets/screenshots/quote.png';
+import trackingScreenshot from '@/assets/screenshots/tracking.png';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -33,10 +37,10 @@ const Landing = () => {
   ];
 
   const steps = [
-    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to', screenshot: '/screenshots/address.png' },
-    { number: '02', title: 'Scan Your Items', description: 'Use intelligent tech to catalog your inventory', screenshot: '/screenshots/scan.png' },
-    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing', screenshot: '/screenshots/quote.png' },
-    { number: '04', title: 'Schedule & Track', description: 'Book your move and track in real-time', screenshot: '/screenshots/tracking.png' },
+    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to', screenshot: addressScreenshot },
+    { number: '02', title: 'Scan Your Items', description: 'Use intelligent tech to catalog your inventory', screenshot: scanScreenshot },
+    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing', screenshot: quoteScreenshot },
+    { number: '04', title: 'Schedule & Track', description: 'Book your move and track in real-time', screenshot: trackingScreenshot },
   ];
 
   const testimonials = [
@@ -303,30 +307,27 @@ const Landing = () => {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <div key={index} className="relative">
-                <div className="text-6xl font-bold font-display text-primary/10 mb-4">
+              <div key={index} className="relative text-center">
+                {/* Number */}
+                <div className="text-5xl font-bold font-display text-primary/20 mb-4">
                   {step.number}
                 </div>
-                <h3 className="font-semibold text-foreground text-xl mb-2">{step.title}</h3>
-                <p className="text-muted-foreground mb-4">{step.description}</p>
                 
-                {/* App Screenshot Placeholder */}
-                <div className="bg-muted rounded-xl aspect-[9/16] max-w-[180px] mx-auto overflow-hidden shadow-card">
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-primary/5 to-primary/10">
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 mx-auto mb-2 gradient-primary rounded-xl flex items-center justify-center">
-                        {index === 0 && <MapPin className="w-6 h-6 text-primary-foreground" />}
-                        {index === 1 && <Camera className="w-6 h-6 text-primary-foreground" />}
-                        {index === 2 && <CheckCircle2 className="w-6 h-6 text-primary-foreground" />}
-                        {index === 3 && <Truck className="w-6 h-6 text-primary-foreground" />}
-                      </div>
-                      <p className="text-xs text-muted-foreground">{step.title}</p>
-                    </div>
-                  </div>
+                {/* App Screenshot */}
+                <div className="bg-card rounded-2xl overflow-hidden shadow-card mb-6 mx-auto max-w-[280px] border border-border">
+                  <img 
+                    src={step.screenshot} 
+                    alt={step.title}
+                    className="w-full h-auto object-cover"
+                  />
                 </div>
                 
+                {/* Text */}
+                <h3 className="font-semibold text-foreground text-xl mb-2">{step.title}</h3>
+                <p className="text-muted-foreground">{step.description}</p>
+                
                 {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-full w-full">
+                  <div className="hidden lg:block absolute top-1/3 left-full w-full z-10">
                     <ArrowRight className="w-6 h-6 text-primary/30 mx-auto" />
                   </div>
                 )}
