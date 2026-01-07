@@ -209,47 +209,47 @@ const Landing = () => {
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-foreground rounded-b-2xl" />
               </div>
               
-              {/* Floating Tech Badges - Hidden on Mobile */}
-              <div className="hidden lg:block absolute -top-6 -left-12 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Camera className="w-4 h-4 text-primary" />
+              {/* Floating Tech Badges - Responsive positioning */}
+              <div className="absolute -top-2 -left-4 lg:-top-6 lg:-left-12 bg-card border border-border rounded-xl lg:rounded-2xl px-2 py-1.5 lg:px-4 lg:py-3 shadow-card animate-float scale-75 lg:scale-100 origin-top-left">
+                <div className="flex items-center gap-1.5 lg:gap-2">
+                  <div className="w-6 h-6 lg:w-8 lg:h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Camera className="w-3 h-3 lg:w-4 lg:h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-foreground">Smart Scan</p>
-                    <p className="text-[10px] text-muted-foreground">Instant inventory</p>
+                    <p className="text-[10px] lg:text-xs font-semibold text-foreground">Smart Scan</p>
+                    <p className="text-[8px] lg:text-[10px] text-muted-foreground">Instant inventory</p>
                   </div>
                 </div>
               </div>
               
-              <div className="hidden lg:block absolute top-20 -right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.3s' }}>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
-                    <Users className="w-4 h-4 text-accent" />
+              <div className="absolute top-12 -right-4 lg:top-20 lg:-right-16 bg-card border border-border rounded-xl lg:rounded-2xl px-2 py-1.5 lg:px-4 lg:py-3 shadow-card animate-float scale-75 lg:scale-100 origin-top-right" style={{ animationDelay: '0.3s' }}>
+                <div className="flex items-center gap-1.5 lg:gap-2">
+                  <div className="w-6 h-6 lg:w-8 lg:h-8 bg-accent/10 rounded-lg flex items-center justify-center">
+                    <Users className="w-3 h-3 lg:w-4 lg:h-4 text-accent" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-foreground">Crew GPS</p>
-                    <p className="text-[10px] text-muted-foreground">Real-time tracking</p>
+                    <p className="text-[10px] lg:text-xs font-semibold text-foreground">Crew GPS</p>
+                    <p className="text-[8px] lg:text-[10px] text-muted-foreground">Real-time tracking</p>
                   </div>
                 </div>
               </div>
               
-              <div className="hidden lg:block absolute bottom-20 -left-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.6s' }}>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <FileCheck className="w-4 h-4 text-primary" />
+              <div className="absolute bottom-24 -left-4 lg:bottom-20 lg:-left-16 bg-card border border-border rounded-xl lg:rounded-2xl px-2 py-1.5 lg:px-4 lg:py-3 shadow-card animate-float scale-75 lg:scale-100 origin-bottom-left" style={{ animationDelay: '0.6s' }}>
+                <div className="flex items-center gap-1.5 lg:gap-2">
+                  <div className="w-6 h-6 lg:w-8 lg:h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <FileCheck className="w-3 h-3 lg:w-4 lg:h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-foreground">Digital Manifest</p>
-                    <p className="text-[10px] text-muted-foreground">Tamper-proof</p>
+                    <p className="text-[10px] lg:text-xs font-semibold text-foreground">Digital Manifest</p>
+                    <p className="text-[8px] lg:text-[10px] text-muted-foreground">Tamper-proof</p>
                   </div>
                 </div>
               </div>
               
-              <div className="hidden lg:block absolute -bottom-4 -right-8 bg-gradient-to-r from-accent to-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Zero Hassle</span>
+              <div className="absolute -bottom-2 -right-2 lg:-bottom-4 lg:-right-8 bg-gradient-to-r from-accent to-primary text-primary-foreground rounded-xl lg:rounded-2xl px-2 py-1.5 lg:px-4 lg:py-3 shadow-soft scale-75 lg:scale-100 origin-bottom-right">
+                <div className="flex items-center gap-1.5 lg:gap-2">
+                  <CheckCircle2 className="w-3 h-3 lg:w-4 lg:h-4" />
+                  <span className="text-xs lg:text-sm font-semibold">Zero Hassle</span>
                 </div>
               </div>
             </div>
