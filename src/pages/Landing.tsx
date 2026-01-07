@@ -103,8 +103,8 @@ const Landing = () => {
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            {/* Hero Content - Text First */}
-            <div className="text-center lg:text-left order-1">
+            {/* Hero Content - Left Column */}
+            <div className="text-center lg:text-left order-1 lg:order-1">
               <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Intelligent Moving</span>
@@ -114,9 +114,47 @@ const Landing = () => {
                 Moving Made
                 <span className="block gradient-text">Intelligent</span>
               </h1>
+              
+              {/* Description - Hidden on mobile until after visual */}
+              <p className="hidden lg:block text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl">
+                Smart relocation that gives you peace of mind. No surveyors, no surprises. 
+                Just seamless, transparent moving powered by intelligent technology.
+              </p>
+              
+              {/* CTA Buttons - Desktop */}
+              <div className="hidden lg:flex flex-col sm:flex-row gap-4">
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
+                  size="lg"
+                  className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
+                >
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
+                  onClick={() => navigate('/login')}
+                >
+                  Watch Demo
+                </Button>
+              </div>
+              
+              {/* Trust badges - Desktop */}
+              <div className="hidden lg:flex mt-8 items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>50,000+ happy movers</span>
+                </div>
+              </div>
             </div>
             
-            {/* Hero Visual - Phone Mockup with App Interface - Second on Mobile */}
+            {/* Hero Visual - Phone Mockup - Second on all screens */}
             <div className="relative order-2 lg:order-2">
               {/* Glowing background effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-3xl rounded-full scale-150 opacity-50" />
@@ -254,54 +292,13 @@ const Landing = () => {
               </div>
             </div>
             
-            {/* Rest of Hero Content - Third on Mobile */}
-            <div className="text-center lg:text-left order-3 lg:col-span-1 lg:order-1 lg:row-start-1 lg:mt-0">
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 lg:hidden">
-                Smart relocation that gives you peace of mind. No surveyors, no surprises. 
-                Just seamless, transparent moving powered by intelligent technology.
-              </p>
-            </div>
-            
-            {/* Desktop only description - stays in left column */}
-            <div className="hidden lg:block order-1 lg:col-span-1 lg:row-start-1" style={{ marginTop: '12rem' }}>
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl">
+            {/* Mobile only - Description and CTA after visual */}
+            <div className="lg:hidden text-center order-3 w-full">
+              <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
                 Smart relocation that gives you peace of mind. No surveyors, no surprises. 
                 Just seamless, transparent moving powered by intelligent technology.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
-                  size="lg"
-                  className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
-                >
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
-                  onClick={() => navigate('/login')}
-                >
-                  Watch Demo
-                </Button>
-              </div>
-              
-              <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" />
-                  <span>No credit card required</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" />
-                  <span>50,000+ happy movers</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Mobile CTA buttons */}
-            <div className="lg:hidden text-center order-4 w-full">
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
