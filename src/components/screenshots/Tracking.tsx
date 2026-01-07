@@ -30,7 +30,38 @@ const TrackingScreenshot = () => {
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <CheckCircle2 className="w-4 h-4" />
-          <p>Packing in Progress</p>
+          <div>
+            <p>Packing in Progress</p>
+            <div className="flex items-center gap-2">
+              <div className="w-24 h-1 bg-muted-foreground/20 rounded-full">
+                <div className="w-1/2 h-full bg-accent rounded-full" />
+              </div>
+              <p className="text-xs">50%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-sm font-semibold mb-2">Your Crew</h3>
+        <div className="flex gap-2">
+          <div className="text-center p-2 bg-muted rounded-lg">
+            <div className="w-8 h-8 mx-auto bg-background rounded-full flex items-center justify-center text-lg mb-1">
+              👨‍🔧
+            </div>
+            <p className="text-xs font-medium">Rajesh</p>
+          </div>
+          <div className="text-center p-2 bg-muted rounded-lg">
+            <div className="w-8 h-8 mx-auto bg-background rounded-full flex items-center justify-center text-lg mb-1">
+              👷
+            </div>
+            <p className="text-xs font-medium">Suresh</p>
+          </div>
+          <div className="text-center p-2 bg-muted rounded-lg">
+            <div className="w-8 h-8 mx-auto bg-background rounded-full flex items-center justify-center text-lg mb-1">
+              🚚
+            </div>
+            <p className="text-xs font-medium">Vijay</p>
+          </div>
         </div>
       </div>
     </div>
