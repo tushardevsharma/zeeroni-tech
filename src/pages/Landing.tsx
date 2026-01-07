@@ -64,33 +64,7 @@ const Landing = () => {
     },
   ];
 
-  // Phone Mockup Component for screenshots
-  const PhoneMockup = ({ screenshot, title }: { screenshot: string; title: string }) => (
-    <div className="relative mx-auto w-[200px] sm:w-[220px]">
-      {/* Phone Frame */}
-      <div className="relative bg-foreground rounded-[2rem] p-2 shadow-2xl">
-        {/* Side buttons */}
-        <div className="absolute -left-1 top-20 w-1 h-8 bg-foreground rounded-l" />
-        <div className="absolute -left-1 top-32 w-1 h-12 bg-foreground rounded-l" />
-        <div className="absolute -right-1 top-24 w-1 h-10 bg-foreground rounded-r" />
-        
-        {/* Screen */}
-        <div className="bg-background rounded-[1.75rem] overflow-hidden">
-          {/* Status Bar */}
-          <div className="bg-foreground px-4 py-1 flex justify-center items-center">
-            <div className="w-16 h-4 bg-background/20 rounded-full" />
-          </div>
-          
-          {/* Screenshot */}
-          <img 
-            src={screenshot} 
-            alt={title}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      </div>
-    </div>
-  );
+  
 
   return (
     <WebLayout fullWidth className="overflow-hidden">
@@ -383,8 +357,31 @@ const Landing = () => {
                 </div>
                 
                 {/* Phone Mockup with Screenshot */}
-                <div className="mb-6">
-                  <PhoneMockup screenshot={step.screenshot} title={step.title} />
+                <div className="mb-6 flex justify-center">
+                  <div className="relative mx-auto w-[200px] sm:w-[220px]">
+                    {/* Phone Frame */}
+                    <div className="relative bg-foreground rounded-[2rem] p-2 shadow-2xl">
+                      {/* Side buttons */}
+                      <div className="absolute -left-1 top-20 w-1 h-8 bg-foreground rounded-l" />
+                      <div className="absolute -left-1 top-32 w-1 h-12 bg-foreground rounded-l" />
+                      <div className="absolute -right-1 top-24 w-1 h-10 bg-foreground rounded-r" />
+                      
+                      {/* Screen */}
+                      <div className="bg-background rounded-[1.75rem] overflow-hidden">
+                        {/* Status Bar */}
+                        <div className="bg-foreground px-4 py-1 flex justify-center items-center">
+                          <div className="w-16 h-4 bg-background/20 rounded-full" />
+                        </div>
+                        
+                        {/* Screenshot */}
+                        <img 
+                          src={step.screenshot} 
+                          alt={step.title}
+                          className="w-full h-[380px] object-cover"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Text */}
@@ -393,7 +390,7 @@ const Landing = () => {
                 
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-1/3 left-full w-full z-10">
-                    <ArrowRight className="w-6 h-6 text-primary/30 mx-auto" />
+                    
                   </div>
                 )}
               </div>
