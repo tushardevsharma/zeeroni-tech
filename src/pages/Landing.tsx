@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import WebLayout from '@/components/layout/WebLayout';
 import zeeroniLogo from '@/assets/zeeroni-logo.png';
 import { toast } from 'sonner';
-import addressScreenshot from '@/assets/screenshots/address.png';
-import scanScreenshot from '@/assets/screenshots/scan.png';
-import quoteScreenshot from '@/assets/screenshots/quote.png';
-import trackingScreenshot from '@/assets/screenshots/tracking.png';
+import AddressScreenshot from '@/components/screenshots/Address';
+import ScanScreenshot from '@/components/screenshots/Scan';
+import QuoteScreenshot from '@/components/screenshots/Quote';
+import TrackingScreenshot from '@/components/screenshots/Tracking';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -37,10 +37,10 @@ const Landing = () => {
   ];
 
   const steps = [
-    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to', screenshot: addressScreenshot },
-    { number: '02', title: 'Scan Your Items', description: 'Use intelligent tech to catalog your inventory', screenshot: scanScreenshot },
-    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing', screenshot: quoteScreenshot },
-    { number: '04', title: 'Schedule & Track', description: 'Book your move and track in real-time', screenshot: trackingScreenshot },
+    { number: '01', title: 'Enter Addresses', description: 'Tell us where you\'re moving from and to', component: AddressScreenshot },
+    { number: '02', title: 'Scan Your Items', description: 'Use intelligent tech to catalog your inventory', component: ScanScreenshot },
+    { number: '03', title: 'Get Instant Quote', description: 'Receive transparent, competitive pricing', component: QuoteScreenshot },
+    { number: '04', 'title': 'Schedule & Track', description: 'Book your move and track in real-time', component: TrackingScreenshot },
   ];
 
   const testimonials = [
@@ -368,17 +368,11 @@ const Landing = () => {
                       
                       {/* Screen */}
                       <div className="bg-background rounded-[1.75rem] overflow-hidden">
-                        {/* Status Bar */}
-                        <div className="bg-foreground px-4 py-1 flex justify-center items-center">
-                          <div className="w-16 h-4 bg-background/20 rounded-full" />
+                        {/* Component */}
+                        {/* Component */}
+                        <div className="h-[380px] overflow-hidden">
+                          <step.component />
                         </div>
-                        
-                        {/* Screenshot */}
-                        <img 
-                          src={step.screenshot} 
-                          alt={step.title}
-                          className="w-full h-[380px] object-cover"
-                        />
                       </div>
                     </div>
                   </div>
