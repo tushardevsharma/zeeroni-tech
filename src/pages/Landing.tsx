@@ -64,19 +64,47 @@ const Landing = () => {
     },
   ];
 
+  // Phone Mockup Component for screenshots
+  const PhoneMockup = ({ screenshot, title }: { screenshot: string; title: string }) => (
+    <div className="relative mx-auto w-[200px] sm:w-[220px]">
+      {/* Phone Frame */}
+      <div className="relative bg-foreground rounded-[2rem] p-2 shadow-2xl">
+        {/* Side buttons */}
+        <div className="absolute -left-1 top-20 w-1 h-8 bg-foreground rounded-l" />
+        <div className="absolute -left-1 top-32 w-1 h-12 bg-foreground rounded-l" />
+        <div className="absolute -right-1 top-24 w-1 h-10 bg-foreground rounded-r" />
+        
+        {/* Screen */}
+        <div className="bg-background rounded-[1.75rem] overflow-hidden">
+          {/* Status Bar */}
+          <div className="bg-foreground px-4 py-1 flex justify-center items-center">
+            <div className="w-16 h-4 bg-background/20 rounded-full" />
+          </div>
+          
+          {/* Screenshot */}
+          <img 
+            src={screenshot} 
+            alt={title}
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <WebLayout fullWidth className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center">
+      <section className="relative min-h-[90vh] flex items-center py-12 lg:py-0">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Hero Content */}
-            <div className="text-center lg:text-left">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            {/* Hero Content - Text First */}
+            <div className="text-center lg:text-left order-1">
               <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Intelligent Moving</span>
@@ -86,45 +114,10 @@ const Landing = () => {
                 Moving Made
                 <span className="block gradient-text">Intelligent</span>
               </h1>
-              
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0">
-                Smart relocation that gives you peace of mind. No surveyors, no surprises. 
-                Just seamless, transparent moving powered by intelligent technology.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button 
-                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
-                  size="lg"
-                  className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
-                >
-                  Get Started Free
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
-                  onClick={() => navigate('/login')}
-                >
-                  Watch Demo
-                </Button>
-              </div>
-              
-              <div className="mt-8 flex items-center gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" />
-                  <span>No credit card required</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" />
-                  <span>50,000+ happy movers</span>
-                </div>
-              </div>
             </div>
             
-            {/* Hero Visual - Phone Mockup with App Interface */}
-            <div className="relative hidden lg:block">
+            {/* Hero Visual - Phone Mockup with App Interface - Second on Mobile */}
+            <div className="relative order-2 lg:order-2">
               {/* Glowing background effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-3xl rounded-full scale-150 opacity-50" />
               
@@ -216,8 +209,8 @@ const Landing = () => {
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-foreground rounded-b-2xl" />
               </div>
               
-              {/* Floating Tech Badges */}
-              <div className="absolute -top-6 -left-12 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float">
+              {/* Floating Tech Badges - Hidden on Mobile */}
+              <div className="hidden lg:block absolute -top-6 -left-12 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                     <Camera className="w-4 h-4 text-primary" />
@@ -229,7 +222,7 @@ const Landing = () => {
                 </div>
               </div>
               
-              <div className="absolute top-20 -right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.3s' }}>
+              <div className="hidden lg:block absolute top-20 -right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.3s' }}>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
                     <Users className="w-4 h-4 text-accent" />
@@ -241,7 +234,7 @@ const Landing = () => {
                 </div>
               </div>
               
-              <div className="absolute bottom-20 -left-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.6s' }}>
+              <div className="hidden lg:block absolute bottom-20 -left-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-card animate-float" style={{ animationDelay: '0.6s' }}>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                     <FileCheck className="w-4 h-4 text-primary" />
@@ -253,10 +246,89 @@ const Landing = () => {
                 </div>
               </div>
               
-              <div className="absolute -bottom-4 -right-8 bg-gradient-to-r from-accent to-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft">
+              <div className="hidden lg:block absolute -bottom-4 -right-8 bg-gradient-to-r from-accent to-primary text-primary-foreground rounded-2xl px-4 py-3 shadow-soft">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
                   <span className="text-sm font-semibold">Zero Hassle</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Rest of Hero Content - Third on Mobile */}
+            <div className="text-center lg:text-left order-3 lg:col-span-1 lg:order-1 lg:row-start-1 lg:mt-0">
+              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 lg:hidden">
+                Smart relocation that gives you peace of mind. No surveyors, no surprises. 
+                Just seamless, transparent moving powered by intelligent technology.
+              </p>
+            </div>
+            
+            {/* Desktop only description - stays in left column */}
+            <div className="hidden lg:block order-1 lg:col-span-1 lg:row-start-1" style={{ marginTop: '12rem' }}>
+              <p className="text-lg sm:text-xl text-muted-foreground mb-8 max-w-xl">
+                Smart relocation that gives you peace of mind. No surveyors, no surprises. 
+                Just seamless, transparent moving powered by intelligent technology.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
+                  size="lg"
+                  className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
+                >
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
+                  onClick={() => navigate('/login')}
+                >
+                  Watch Demo
+                </Button>
+              </div>
+              
+              <div className="mt-8 flex items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>50,000+ happy movers</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Mobile CTA buttons */}
+            <div className="lg:hidden text-center order-4 w-full">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: 'We\'re launching soon! Stay tuned.' })}
+                  size="lg"
+                  className="gradient-primary text-lg font-semibold px-8 py-6 shadow-soft"
+                >
+                  Get Started Free
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="text-lg font-semibold px-8 py-6 hover:text-primary-foreground"
+                  onClick={() => navigate('/login')}
+                >
+                  Watch Demo
+                </Button>
+              </div>
+              
+              <div className="mt-8 flex items-center gap-6 justify-center text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-accent" />
+                  <span>50,000+ happy movers</span>
                 </div>
               </div>
             </div>
@@ -313,13 +385,9 @@ const Landing = () => {
                   {step.number}
                 </div>
                 
-                {/* App Screenshot */}
-                <div className="bg-card rounded-2xl overflow-hidden shadow-card mb-6 mx-auto max-w-[280px] border border-border">
-                  <img 
-                    src={step.screenshot} 
-                    alt={step.title}
-                    className="w-full h-auto object-cover"
-                  />
+                {/* Phone Mockup with Screenshot */}
+                <div className="mb-6">
+                  <PhoneMockup screenshot={step.screenshot} title={step.title} />
                 </div>
                 
                 {/* Text */}
@@ -333,6 +401,145 @@ const Landing = () => {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 lg:py-32 bg-card">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-accent/10 rounded-full px-4 py-2 mb-6">
+              <Sparkles className="w-4 h-4 text-accent" />
+              <span className="text-sm font-medium text-accent">Limited Time Offer</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold font-display text-foreground mb-4">
+              Introductory Pricing
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Flat rates with no hidden fees. Book now and lock in these special launch prices.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* 1BHK */}
+            <div className="relative p-8 bg-background rounded-2xl shadow-card border border-border hover:shadow-soft transition-all duration-300">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-foreground mb-2">1 BHK</h3>
+                <p className="text-sm text-muted-foreground mb-6">Perfect for studio apartments</p>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-foreground">₹4,999</span>
+                  <span className="text-muted-foreground ml-2 line-through">₹7,999</span>
+                </div>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Up to 50 items</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Same city move</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Real-time tracking</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Digital manifest</span>
+                  </li>
+                </ul>
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." })}
+                  className="w-full gradient-primary font-semibold"
+                >
+                  Book Now
+                </Button>
+              </div>
+            </div>
+            
+            {/* 2BHK - Popular */}
+            <div className="relative p-8 bg-background rounded-2xl shadow-soft border-2 border-primary scale-105">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                Most Popular
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-foreground mb-2">2 BHK</h3>
+                <p className="text-sm text-muted-foreground mb-6">Ideal for small families</p>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-foreground">₹7,999</span>
+                  <span className="text-muted-foreground ml-2 line-through">₹12,999</span>
+                </div>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Up to 100 items</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Same city move</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Priority scheduling</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Packing materials included</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Insurance coverage</span>
+                  </li>
+                </ul>
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." })}
+                  className="w-full gradient-primary font-semibold"
+                >
+                  Book Now
+                </Button>
+              </div>
+            </div>
+            
+            {/* 3BHK */}
+            <div className="relative p-8 bg-background rounded-2xl shadow-card border border-border hover:shadow-soft transition-all duration-300">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-foreground mb-2">3 BHK</h3>
+                <p className="text-sm text-muted-foreground mb-6">Best for larger homes</p>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-foreground">₹11,999</span>
+                  <span className="text-muted-foreground ml-2 line-through">₹18,999</span>
+                </div>
+                <ul className="text-left space-y-3 mb-8">
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Up to 200 items</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Same city move</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Dedicated move manager</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Full packing service</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                    <span>Premium insurance</span>
+                  </li>
+                </ul>
+                <Button 
+                  onClick={() => toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." })}
+                  className="w-full gradient-primary font-semibold"
+                >
+                  Book Now
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -372,7 +579,7 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section id="pricing" className="py-20 lg:py-32 relative overflow-hidden">
+      <section className="py-20 lg:py-32 relative overflow-hidden">
         <div className="absolute inset-0 gradient-primary opacity-5" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
@@ -383,7 +590,7 @@ const Landing = () => {
               Get your instant quote in under 2 minutes. No obligations, no hidden fees.
             </p>
             <Button 
-              onClick={() => navigate('/login')}
+              onClick={() => toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." })}
               size="lg"
               className="gradient-primary text-lg font-semibold px-10 py-6 shadow-soft"
             >

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import zeeroniLogo from '@/assets/zeeroni-logo.png';
+import { toast } from 'sonner';
 
 const Header = () => {
   const location = useLocation();
@@ -16,6 +17,10 @@ const Header = () => {
     { href: '/#how-it-works', label: 'How It Works' },
     { href: '/#pricing', label: 'Pricing' },
   ];
+
+  const handleComingSoon = () => {
+    toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." });
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -45,18 +50,9 @@ const Header = () => {
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             {!isInFlow && (
-              <>
-                <Link to="/login" className="hidden sm:block">
-                  <Button variant="ghost" className="font-medium">
-                    Log In
-                  </Button>
-                </Link>
-                <Link to="/login">
-                  <Button className="gradient-primary font-semibold px-6">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
+              <Button onClick={handleComingSoon} className="gradient-primary font-semibold px-6">
+                Get Started
+              </Button>
             )}
 
             {/* Mobile Menu Toggle */}
