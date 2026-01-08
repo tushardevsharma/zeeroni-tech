@@ -598,7 +598,7 @@ const Landing = () => {
               <span className="font-display font-bold text-lg text-foreground">Zeeroni</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2024 Zeeroni. All rights reserved.
+              © 2026 Zeeroni. All rights reserved.
             </p>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
