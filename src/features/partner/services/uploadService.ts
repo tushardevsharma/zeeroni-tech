@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useAuth } from "../auth/AuthContext";
 import {
   PresignedUrlResponse,
@@ -8,7 +9,7 @@ export const uploadService = () => {
   const { getToken } = useAuth();
   const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
 
-  const getHeaders = (contentType = "application/json") => {
+  const getHeaders = useCallback((contentType = "application/json") => {
     const token = getToken();
     const headers: HeadersInit = {
       Authorization: `Bearer ${token}`,
@@ -17,9 +18,9 @@ export const uploadService = () => {
       headers["Content-Type"] = contentType;
     }
     return headers;
-  };
+  }, [getToken]);
 
-  const getPresignedUrl = async (
+  const getPresignedUrl = useCallback(async (
     fileName: string,
     contentType: string
   ): Promise<PresignedUrlResponse> => {
@@ -34,9 +35,9 @@ export const uploadService = () => {
       throw new Error(errorData.message || "Failed to get presigned URL");
     }
     return response.json();
-  };
+  }, [API_BASE_URL, getHeaders]);
 
-  const uploadFileToS3 = async (
+  const uploadFileToS3 = useCallback(async (
     presignedUrl: string,
     file: File,
     onUploadProgress?: (progress: number) => void
@@ -67,9 +68,9 @@ export const uploadService = () => {
 
       xhr.send(file);
     });
-  };
+  }, []); // No dependencies for uploadFileToS3 as it directly uses parameters
 
-  const processUpload = async (
+  const processUpload = useCallback(async (
     uploadId: string
   ): Promise<ProcessUploadResponse> => {
     const response = await fetch(`${API_BASE_URL}/survey/process-upload`, {
@@ -83,9 +84,9 @@ export const uploadService = () => {
       throw new Error(errorData.message || "Failed to process upload");
     }
     return response.json();
-  };
+  }, [API_BASE_URL, getHeaders]);
 
-  const getUserUploads = async (): Promise<any[]> => {
+  const getUserUploads = useCallback(async (): Promise<any[]> => {
     const response = await fetch(`${API_BASE_URL}/uploads/user`, {
       method: "GET",
       headers: getHeaders(),
@@ -96,9 +97,9 @@ export const uploadService = () => {
       throw new Error(errorData.message || "Failed to fetch user uploads");
     }
     return response.json();
-  };
+  }, [API_BASE_URL, getHeaders]);
 
-  const getUploadStatus = async (
+  const getUploadStatus = useCallback(async (
     uploadId: string
   ): Promise<any> => {
     const response = await fetch(
@@ -114,9 +115,9 @@ export const uploadService = () => {
       throw new Error(errorData.message || "Failed to fetch upload status");
     }
     return response.json();
-  };
+  }, [API_BASE_URL, getHeaders]);
 
-  const getDigitalManifest = async (
+  const getDigitalManifest = useCallback(async (
     uploadId: string
   ): Promise<any> => {
     const response = await fetch(
@@ -132,7 +133,7 @@ export const uploadService = () => {
       throw new Error(errorData.message || "Failed to fetch digital manifest");
     }
     return response.json();
-  };
+  }, [API_BASE_URL, getHeaders]);
 
   return {
     getPresignedUrl,

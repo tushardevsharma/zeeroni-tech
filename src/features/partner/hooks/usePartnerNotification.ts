@@ -1,31 +1,32 @@
+import { useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export const usePartnerNotification = () => {
   const { toast } = useToast();
 
-  const showSuccess = (message: string, duration?: number) => {
+  const showSuccess = useCallback((message: string, duration?: number) => {
     toast({
       description: message,
-      variant: "success", // Assuming a 'success' variant exists for styling
+      variant: "success",
       duration: duration || 3000,
     });
-  };
+  }, [toast]);
 
-  const showError = (message: string, duration?: number) => {
+  const showError = useCallback((message: string, duration?: number) => {
     toast({
       description: message,
-      variant: "destructive", // 'destructive' is a common variant for errors in shadcn/ui
+      variant: "destructive",
       duration: duration || 5000,
     });
-  };
+  }, [toast]);
 
-  const showInfo = (message: string, duration?: number) => {
+  const showInfo = useCallback((message: string, duration?: number) => {
     toast({
       description: message,
-      variant: "default", // 'default' or a specific 'info' variant if available
+      variant: "default",
       duration: duration || 3000,
     });
-  };
+  }, [toast]);
 
   return { showSuccess, showError, showInfo };
 };

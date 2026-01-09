@@ -364,7 +364,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
               Upload a video file
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Only small files less than {MAX_FILE_SIZE_MB} MB are supported
+              Only small files less than {MAX_FILE_SIZE_MB}MB are supported
             </p>
           </div>
 
