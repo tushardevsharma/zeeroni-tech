@@ -44,7 +44,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md">
+      <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md" hideCloseButton={true}> {/* Hide default close button */}
         {isLoading && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-lg bg-background/80 text-primary">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-r-transparent" />
@@ -52,9 +52,19 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
           </div>
         )}
 
-        <SheetHeader className="flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white">
+        <SheetHeader className="relative flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white"> {/* Add relative for absolute positioning of close button */}
           <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
-          {/* SheetPrimitive.Close will be positioned by SheetContent */}
+          <SheetClose asChild> {/* Use SheetClose for accessibility and correct functionality */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-primary/80 hover:text-white"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </SheetClose>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6">

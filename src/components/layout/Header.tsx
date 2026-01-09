@@ -4,13 +4,18 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import zeeroniLogo from '@/assets/zeeroni-logo.png';
 import { toast } from 'sonner';
+import { useAuth } from '@/features/partner/auth/AuthContext'; // Import AuthContext
+import { usePartnerNotification } from '@/features/partner/hooks/usePartnerNotification'; // Import usePartnerNotification
 
 const Header = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { isAuthenticated, logout: authLogout } = useAuth(); // Use AuthContext
+  const { showInfo } = usePartnerNotification(); // Use Partner Notification
 
   const isLanding = location.pathname === '/';
   const isInFlow = ['/address', '/scan', '/inventory', '/quote', '/schedule', '/tracking', '/verification', '/complete'].includes(location.pathname);
+  const isPartnerRoute = location.pathname === '/partner'; // Check if on partner route
 
   const navLinks = [
     { href: '/#features', label: 'Features' },
@@ -20,6 +25,11 @@ const Header = () => {
 
   const handleComingSoon = () => {
     toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." });
+  };
+
+  const handleLogout = () => {
+    authLogout();
+    showInfo('You have been logged out.');
   };
 
   return (
@@ -49,10 +59,16 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
-            {!isInFlow && (
-              <Button onClick={handleComingSoon} className="gradient-primary font-semibold px-6">
-                Get Started
+            {isAuthenticated && isPartnerRoute ? ( // Show logout button on partner route if authenticated
+              <Button onClick={handleLogout} variant="secondary" className="bg-accent hover:bg-accent/80 text-white">
+                Logout
               </Button>
+            ) : (
+              !isInFlow && ( // Original "Get Started" button for non-flow pages
+                <Button onClick={handleComingSoon} className="gradient-primary font-semibold px-6">
+                  Get Started
+                </Button>
+              )
             )}
 
             {/* Mobile Menu Toggle */}
