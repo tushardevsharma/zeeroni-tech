@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
 
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription: authListener } } = supabaseClient.auth.onAuthStateChange((event, session) => {
       if (session) {
         setIsAuthenticated(true);
         setUser(session.user);

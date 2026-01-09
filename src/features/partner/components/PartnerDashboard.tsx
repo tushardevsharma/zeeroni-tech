@@ -8,6 +8,8 @@ import { DigitalManifestModal } from "./DigitalManifestModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import zeeroniLogo from "@/assets/zeeroni-logo.png";
 import {
   SurveyUpload,
   GeminiAnalyzedItem,
@@ -325,8 +327,11 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center justify-between bg-primary p-4 text-primary-foreground shadow-md md:px-8">
-        <div className="text-xl font-bold">MOVE WITH PEACE</div> {/* Placeholder for logo */}
+      <header className="flex items-center justify-between bg-background/80 backdrop-blur-lg border-b border-border p-4 text-foreground shadow-md md:h-20 md:px-8">
+        <Link to="/" className="flex items-center gap-3">
+          <img src={zeeroniLogo} alt="Zeeroni" className="h-8 md:h-10" />
+          <span className="font-display font-bold text-xl text-foreground">Zeeroni</span>
+        </Link>
         <div className="flex items-center space-x-4">
           {/* Avatar Placeholder */}
           <div className="h-10 w-10 rounded-full border-2 border-white bg-gray-300"></div>

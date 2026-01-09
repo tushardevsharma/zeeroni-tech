@@ -54,13 +54,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
         <SheetHeader className="flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white">
           <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
-          <button
-            className="text-2xl font-bold text-white transition-opacity hover:opacity-70"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            <X className="h-6 w-6" />
-          </button>
+          {/* SheetPrimitive.Close will be positioned by SheetContent */}
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6">
