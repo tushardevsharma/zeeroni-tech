@@ -4,9 +4,11 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetClose,
 } from "@/components/ui/sheet"; // Assuming Sheet is used for slide-over modal
 import { cn } from "@/lib/utils"; // Utility for combining Tailwind classes
 import { X } from "lucide-react"; // Close icon
+import { Button } from "@/components/ui/button"; // Added Button import
 import {
   GeminiAnalyzedItem,
   GeminiLogistics,
@@ -54,16 +56,14 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
         <SheetHeader className="relative flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white"> {/* Add relative for absolute positioning of close button */}
           <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
-          <SheetClose asChild> {/* Use SheetClose for accessibility and correct functionality */}
-            <Button
-              variant="ghost"
-              size="sm"
+          <SheetClose asChild>
+            <button
               onClick={onClose}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-primary/80 hover:text-white"
+              className="absolute right-4 top-1/3 -translate-y-1/2 rounded-sm opacity-70 text-white ring-offset-background transition-opacity hover:bg-primary/80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
-            </Button>
+            </button>
           </SheetClose>
         </SheetHeader>
 

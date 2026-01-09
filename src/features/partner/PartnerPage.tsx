@@ -5,6 +5,7 @@ import { PartnerDashboard } from "./components/PartnerDashboard";
 
 export const PartnerPage: FC = () => {
   const { isAuthenticated } = useAuth();
+  console.log("PartnerPage: isAuthenticated =", isAuthenticated);
 
   const handleLoginSuccess = useCallback(() => {
     // Optionally, perform any actions needed after successful login
