@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import zeeroniLogo from "@/assets/zeeroni-logo.png";
+import WebLayout from "@/components/layout/WebLayout"; // Ensure this is imported once at the top
 import {
   SurveyUpload,
   GeminiAnalyzedItem,
@@ -326,22 +327,8 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center justify-between bg-background/80 backdrop-blur-lg border-b border-border p-4 text-foreground shadow-md md:h-20 md:px-8">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={zeeroniLogo} alt="Zeeroni" className="h-8 md:h-10" />
-          <span className="font-display font-bold text-xl text-foreground">Zeeroni</span>
-        </Link>
-        <div className="flex items-center space-x-4">
-          {/* Avatar Placeholder */}
-          <div className="h-10 w-10 rounded-full border-2 border-white bg-gray-300"></div>
-          <Button onClick={logout} variant="secondary" className="bg-accent hover:bg-accent/80 text-white">
-            Logout
-          </Button>
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-6xl flex-grow p-6">
+    <WebLayout> {/* Use WebLayout to include the shared Header */}
+      <div className="mx-auto w-full max-w-6xl flex-grow p-6">
         <h2 className="mb-4 text-center text-3xl font-bold text-primary">
           Video Survey
         </h2>
@@ -532,7 +519,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
             </>
           )}
         </div>
-      </main>
+      </div> {/* This div closes the content that was inside main */}
 
       <DigitalManifestModal
         manifestData={selectedManifest}
@@ -540,6 +527,6 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
         isOpen={isModalOpen}
         onClose={closeDigitalManifest}
       />
-    </div>
+    </WebLayout>
   );
 };
