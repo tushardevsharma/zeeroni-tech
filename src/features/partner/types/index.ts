@@ -32,9 +32,11 @@ export interface GeminiAnalyzedItem {
   notes?: string;
 }
 
+export type UploadStatus = 'Pending' | 'Processing' | 'Completed' | 'Failed' | 'Queued';
+
 export interface SurveyUpload {
   uploadId: string;
-  status: 'Pending' | 'Processing' | 'Completed' | 'Failed' | 'Queued';
+  status: UploadStatus;
   message: string | null;
   createdTimestamp: string;
   fileName?: string;
@@ -42,6 +44,37 @@ export interface SurveyUpload {
 
 export interface UploadStatusResponse {
   uploadId: string;
-  status: 'Pending' | 'Processing' | 'Completed' | 'Failed' | 'Queued';
+  status: UploadStatus;
   message?: string | null;
+}
+
+export interface PresignedUrlResponse {
+  uploadId: string;
+  preSignedUrl: string;
+}
+
+export interface ProcessUploadResponse {
+  uploadId: string;
+  status: UploadStatus;
+  message?: string | null;
+}
+
+// Lead types
+export interface LeadMoveDetails {
+  desiredMoveOutDate: string;
+  moveSize: string;
+}
+
+export interface LeadMetadata {
+  userAgent: string;
+  ipAddress: string;
+}
+
+export interface Lead {
+  leadKey: string;
+  name: string;
+  phoneNumber: string;
+  moveDetails: LeadMoveDetails;
+  metadata: LeadMetadata;
+  createdAt: string;
 }
