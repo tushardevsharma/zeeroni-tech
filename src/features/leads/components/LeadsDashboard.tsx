@@ -4,7 +4,7 @@ import { useAuth } from "@/features/partner/auth/AuthContext";
 import { useLeadService } from "../services/leadService";
 import { Lead } from "../types";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Phone, Calendar, Home, User, Clock } from "lucide-react";
+import { RefreshCw, Phone, Calendar, Home, User, Clock, Info, ChevronDown, ChevronUp } from "lucide-react";
 import WebLayout from "@/components/layout/WebLayout";
 import {
   Table,
@@ -15,6 +15,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export const LeadsDashboard: FC = () => {
   const { logout: authLogout } = useAuth();
@@ -24,6 +29,26 @@ export const LeadsDashboard: FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [expandedLeads, setExpandedLeads] = useState<Set<string>>(new Set());
+
+  const toggleLeadExpanded = (leadKey: string) => {
+    setExpandedLeads(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(leadKey)) {
+        newSet.delete(leadKey);
+      } else {
+        newSet.add(leadKey);
+      }
+      return newSet;
+    });
+  };
+
+  const formatMetadataKey = (key: string) => {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .replace(/_/g, ' ');
+  };
 
   const fetchLeads = useCallback(async () => {
     setIsLoading(true);
@@ -166,6 +191,7 @@ export const LeadsDashboard: FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-8"></TableHead>
                     <TableHead>Lead ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Phone</TableHead>
@@ -176,41 +202,77 @@ export const LeadsDashboard: FC = () => {
                 </TableHeader>
                 <TableBody>
                   {leads.map((lead) => (
-                    <TableRow key={lead.leadKey}>
-                      <TableCell className="font-mono text-sm">
-                        {lead.leadKey}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {lead.name}
-                      </TableCell>
-                      <TableCell>
-                        <a
-                          href={`tel:${lead.phoneNumber}`}
-                          className="flex items-center gap-2 text-primary hover:underline"
-                        >
-                          <Phone className="h-4 w-4" />
-                          {formatPhoneNumber(lead.phoneNumber)}
-                        </a>
-                      </TableCell>
-                      <TableCell>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                          <Home className="h-3 w-3" />
-                          {lead.moveDetails.moveSize}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          {format(new Date(lead.moveDetails.desiredMoveOutDate), "MMM d, yyyy")}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          {format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")}
-                        </span>
-                      </TableCell>
-                    </TableRow>
+                    <Collapsible key={lead.leadKey} open={expandedLeads.has(lead.leadKey)} onOpenChange={() => toggleLeadExpanded(lead.leadKey)} asChild>
+                      <>
+                        <TableRow className="cursor-pointer" onClick={() => toggleLeadExpanded(lead.leadKey)}>
+                          <TableCell className="w-8">
+                            <CollapsibleTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                {expandedLeads.has(lead.leadKey) ? (
+                                  <ChevronUp className="h-4 w-4" />
+                                ) : (
+                                  <ChevronDown className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </CollapsibleTrigger>
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">
+                            {lead.leadKey}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {lead.name}
+                          </TableCell>
+                          <TableCell>
+                            <a
+                              href={`tel:${lead.phoneNumber}`}
+                              className="flex items-center gap-2 text-primary hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Phone className="h-4 w-4" />
+                              {formatPhoneNumber(lead.phoneNumber)}
+                            </a>
+                          </TableCell>
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                              <Home className="h-3 w-3" />
+                              {lead.moveDetails.moveSize}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                              {format(new Date(lead.moveDetails.desiredMoveOutDate), "MMM d, yyyy")}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              {format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                        <CollapsibleContent asChild>
+                          <tr className="bg-muted/30">
+                            <td colSpan={7} className="p-4">
+                              <div className="flex items-start gap-2">
+                                <Info className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-sm font-medium text-foreground mb-2">Metadata</p>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                                    {Object.entries(lead.metadata).map(([key, value]) => (
+                                      <div key={key} className="flex flex-col rounded-md bg-background p-2 border">
+                                        <span className="text-xs text-muted-foreground">{formatMetadataKey(key)}</span>
+                                        <span className="text-sm font-medium text-foreground break-all">{value}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </CollapsibleContent>
+                      </>
+                    </Collapsible>
                   ))}
                 </TableBody>
               </Table>

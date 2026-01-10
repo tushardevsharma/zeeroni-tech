@@ -15,7 +15,9 @@ const Header = () => {
 
   const isLanding = location.pathname === '/';
   const isInFlow = ['/address', '/scan', '/inventory', '/quote', '/schedule', '/tracking', '/verification', '/complete'].includes(location.pathname);
-  const isPartnerRoute = location.pathname === '/partner'; // Check if on partner route
+  const isPartnerRoute = location.pathname === '/partner';
+  const isLeadsRoute = location.pathname === '/leads';
+  const showLogout = isAuthenticated && (isPartnerRoute || isLeadsRoute);
 
   const navLinks = [
     { href: '/#features', label: 'Features' },
@@ -59,12 +61,12 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
-            {isAuthenticated && isPartnerRoute ? ( // Show logout button on partner route if authenticated
+            {showLogout ? (
               <Button onClick={handleLogout} variant="secondary" className="bg-accent hover:bg-accent/80 text-white">
                 Logout
               </Button>
             ) : (
-              !isInFlow && ( // Original "Get Started" button for non-flow pages
+              !isInFlow && (
                 <Button onClick={handleComingSoon} className="gradient-primary font-semibold px-6">
                   Get Started
                 </Button>
