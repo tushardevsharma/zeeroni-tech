@@ -114,9 +114,6 @@ export const LeadsDashboard: FC = () => {
               <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              Logout
-            </Button>
           </div>
         </div>
 
