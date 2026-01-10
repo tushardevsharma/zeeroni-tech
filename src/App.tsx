@@ -14,14 +14,15 @@ import Tracking from "./pages/Tracking";
 import Verification from "./pages/Verification";
 import Complete from "./pages/Complete";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./features/partner/auth/AuthContext"; // Import AuthProvider
-import { PartnerPage } from "./features/partner/PartnerPage";     // Import PartnerPage
+import { AuthProvider } from "./features/partner/auth/AuthContext";
+import { PartnerPage } from "./features/partner/PartnerPage";
+import { LeadsPage } from "./features/leads/LeadsPage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider> {/* Wrap with AuthProvider */}
+    <AuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -37,7 +38,8 @@ const App = () => (
             <Route path="/tracking" element={<Tracking />} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/complete" element={<Complete />} />
-            <Route path="/partner" element={<PartnerPage />} /> {/* New Partner Route */}
+            <Route path="/partner" element={<PartnerPage />} />
+            <Route path="/leads" element={<LeadsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

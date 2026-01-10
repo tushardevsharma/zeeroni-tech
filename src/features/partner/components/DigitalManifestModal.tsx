@@ -13,7 +13,7 @@ import {
   GeminiAnalyzedItem,
   GeminiLogistics,
   GeminiPackagingLayer,
-} from "../../types"; // Adjust path as needed
+} from "../types";
 
 interface DigitalManifestModalProps {
   manifestData: GeminiAnalyzedItem[] | null;

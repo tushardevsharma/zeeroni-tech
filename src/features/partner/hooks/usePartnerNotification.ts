@@ -7,7 +7,7 @@ export const usePartnerNotification = () => {
   const showSuccess = useCallback((message: string, duration?: number) => {
     toast({
       description: message,
-      variant: "success",
+      variant: "default",
       duration: duration || 3000,
     });
   }, [toast]);
