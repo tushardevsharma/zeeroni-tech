@@ -10,6 +10,7 @@ import { usePartnerNotification } from '@/features/partner/hooks/usePartnerNotif
 const Header = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const { isAuthenticated, logout: authLogout } = useAuth(); // Use AuthContext
   const { showInfo } = usePartnerNotification(); // Use Partner Notification
 
@@ -29,9 +30,14 @@ const Header = () => {
     toast.info('Coming Soon', { description: "We're launching soon! Stay tuned." });
   };
 
-  const handleLogout = () => {
-    authLogout();
-    showInfo('You have been logged out.');
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await authLogout();
+      showInfo('You have been logged out.');
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -62,8 +68,15 @@ const Header = () => {
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             {showLogout ? (
-              <Button onClick={handleLogout} variant="secondary" className="bg-accent hover:bg-accent/80 text-white">
-                Logout
+              <Button onClick={handleLogout} variant="secondary" className="bg-accent hover:bg-accent/80 text-white" disabled={isLoggingOut}>
+                {isLoggingOut ? (
+                  <>
+                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                    Logging out...
+                  </>
+                ) : (
+                  'Logout'
+                )}
               </Button>
             ) : (
               !isInFlow && (

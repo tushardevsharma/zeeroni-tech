@@ -500,8 +500,16 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
                         <Button
                           onClick={() => openDigitalManifest(upload.uploadId)}
                           className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm"
+                          disabled={isLoadingManifest}
                         >
-                          Get Digital Manifest
+                          {isLoadingManifest ? (
+                            <>
+                              <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-r-transparent" />
+                              Loading...
+                            </>
+                          ) : (
+                            'Get Digital Manifest'
+                          )}
                         </Button>
                       )}
                       {upload.status === "Failed" && (
