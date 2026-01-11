@@ -1,10 +1,11 @@
-import React, { FC, useState, useEffect, useCallback } from "react";
+import React, { FC, useState, useEffect, useCallback, useMemo } from "react";
 import { format } from "date-fns";
 import { useAuth } from "@/features/partner/auth/AuthContext";
 import { useLeadService } from "../services/leadService";
 import { Lead } from "../types";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Phone, Calendar, Home, User, Clock, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RefreshCw, Phone, Calendar, Home, User, Clock, Info, ChevronDown, ChevronUp, Download, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import WebLayout from "@/components/layout/WebLayout";
 import {
   Table,
@@ -21,6 +22,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+type SortField = "moveDate" | "createdAt" | null;
+type SortDirection = "asc" | "desc";
+
 export const LeadsDashboard: FC = () => {
   const { logout: authLogout } = useAuth();
   const { getLeads } = useLeadService();
@@ -30,6 +34,9 @@ export const LeadsDashboard: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [expandedLeads, setExpandedLeads] = useState<Set<string>>(new Set());
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const toggleLeadExpanded = (leadKey: string) => {
     setExpandedLeads(prev => {
@@ -43,11 +50,120 @@ export const LeadsDashboard: FC = () => {
     });
   };
 
+  const toggleLeadSelected = (leadKey: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedLeads(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(leadKey)) {
+        newSet.delete(leadKey);
+      } else {
+        newSet.add(leadKey);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedLeads.size === leads.length) {
+      setSelectedLeads(new Set());
+    } else {
+      setSelectedLeads(new Set(leads.map(l => l.leadKey)));
+    }
+  };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("desc");
+    }
+  };
+
+  const sortedLeads = useMemo(() => {
+    if (!sortField) return leads;
+    
+    return [...leads].sort((a, b) => {
+      let dateA: Date, dateB: Date;
+      
+      if (sortField === "moveDate") {
+        dateA = new Date(a.moveDetails.desiredMoveOutDate);
+        dateB = new Date(b.moveDetails.desiredMoveOutDate);
+      } else {
+        dateA = new Date(a.createdAt);
+        dateB = new Date(b.createdAt);
+      }
+      
+      const comparison = dateA.getTime() - dateB.getTime();
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+  }, [leads, sortField, sortDirection]);
+
   const formatMetadataKey = (key: string) => {
     return key
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, str => str.toUpperCase())
       .replace(/_/g, ' ');
+  };
+
+  const downloadCSV = () => {
+    const leadsToExport = selectedLeads.size > 0 
+      ? sortedLeads.filter(l => selectedLeads.has(l.leadKey))
+      : sortedLeads;
+
+    if (leadsToExport.length === 0) {
+      toast({
+        description: "No leads to export",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Get all unique metadata keys
+    const allMetadataKeys = new Set<string>();
+    leadsToExport.forEach(lead => {
+      Object.keys(lead.metadata).forEach(key => allMetadataKeys.add(key));
+    });
+    const metadataKeys = Array.from(allMetadataKeys).sort();
+
+    // Build CSV headers
+    const headers = [
+      "Lead ID",
+      "Name",
+      "Phone",
+      "Move Size",
+      "Move Date",
+      "Created At",
+      ...metadataKeys.map(k => formatMetadataKey(k))
+    ];
+
+    // Build CSV rows
+    const rows = leadsToExport.map(lead => [
+      lead.leadKey,
+      lead.name,
+      lead.phoneNumber,
+      lead.moveDetails.moveSize,
+      lead.moveDetails.desiredMoveOutDate,
+      format(new Date(lead.createdAt), "yyyy-MM-dd HH:mm:ss"),
+      ...metadataKeys.map(k => lead.metadata[k] || "")
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    // Download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `leads_${format(new Date(), "yyyy-MM-dd_HH-mm")}.csv`;
+    link.click();
+
+    toast({
+      description: `Exported ${leadsToExport.length} leads to CSV`,
+    });
   };
 
   const fetchLeads = useCallback(async () => {
@@ -56,6 +172,7 @@ export const LeadsDashboard: FC = () => {
       const fetchedLeads = await getLeads();
       setLeads(fetchedLeads);
       setLastRefreshed(new Date());
+      setSelectedLeads(new Set()); // Clear selection on refresh
       toast({
         description: `Loaded ${fetchedLeads.length} leads`,
         variant: "default",
@@ -89,6 +206,15 @@ export const LeadsDashboard: FC = () => {
     return phone;
   };
 
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="h-4 w-4 ml-1" />;
+    }
+    return sortDirection === "asc" 
+      ? <ArrowUp className="h-4 w-4 ml-1" />
+      : <ArrowDown className="h-4 w-4 ml-1" />;
+  };
+
   return (
     <WebLayout>
       <div className="mx-auto w-full max-w-6xl flex-grow p-6">
@@ -100,12 +226,21 @@ export const LeadsDashboard: FC = () => {
               Monitor and manage incoming leads
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             {lastRefreshed && (
               <span className="text-sm text-muted-foreground">
                 Last updated: {format(lastRefreshed, "h:mm:ss a")}
               </span>
             )}
+            <Button
+              onClick={downloadCSV}
+              variant="outline"
+              className="gap-2"
+              disabled={leads.length === 0}
+            >
+              <Download className="h-4 w-4" />
+              {selectedLeads.size > 0 ? `Export ${selectedLeads.size} Selected` : "Export All"}
+            </Button>
             <Button
               onClick={fetchLeads}
               disabled={isLoading}
@@ -170,8 +305,13 @@ export const LeadsDashboard: FC = () => {
 
         {/* Leads Table */}
         <div className="rounded-lg border bg-card shadow-sm">
-          <div className="border-b px-6 py-4">
+          <div className="border-b px-6 py-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-foreground">All Leads</h3>
+            {selectedLeads.size > 0 && (
+              <span className="text-sm text-muted-foreground">
+                {selectedLeads.size} of {leads.length} selected
+              </span>
+            )}
           </div>
           
           {isLoading ? (
@@ -188,20 +328,60 @@ export const LeadsDashboard: FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox
+                        checked={selectedLeads.size === leads.length && leads.length > 0}
+                        onCheckedChange={toggleSelectAll}
+                        aria-label="Select all"
+                      />
+                    </TableHead>
                     <TableHead className="w-8"></TableHead>
                     <TableHead>Lead ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Move Size</TableHead>
-                    <TableHead>Move Date</TableHead>
-                    <TableHead>Created</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("moveDate")}
+                    >
+                      <span className="flex items-center">
+                        Move Date
+                        <SortIcon field="moveDate" />
+                      </span>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("createdAt")}
+                    >
+                      <span className="flex items-center">
+                        Created
+                        <SortIcon field="createdAt" />
+                      </span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {leads.map((lead) => (
+                  {sortedLeads.map((lead) => (
                     <Collapsible key={lead.leadKey} open={expandedLeads.has(lead.leadKey)} onOpenChange={() => toggleLeadExpanded(lead.leadKey)} asChild>
                       <>
                         <TableRow className="cursor-pointer" onClick={() => toggleLeadExpanded(lead.leadKey)}>
+                          <TableCell className="w-10" onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                              checked={selectedLeads.has(lead.leadKey)}
+                              onCheckedChange={() => {
+                                setSelectedLeads(prev => {
+                                  const newSet = new Set(prev);
+                                  if (newSet.has(lead.leadKey)) {
+                                    newSet.delete(lead.leadKey);
+                                  } else {
+                                    newSet.add(lead.leadKey);
+                                  }
+                                  return newSet;
+                                });
+                              }}
+                              aria-label={`Select ${lead.name}`}
+                            />
+                          </TableCell>
                           <TableCell className="w-8">
                             <CollapsibleTrigger asChild>
                               <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
@@ -250,7 +430,7 @@ export const LeadsDashboard: FC = () => {
                         </TableRow>
                         <CollapsibleContent asChild>
                           <tr className="bg-muted/30">
-                            <td colSpan={7} className="p-4">
+                            <td colSpan={8} className="p-4">
                               <div className="flex items-start gap-2">
                                 <Info className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                                 <div>
