@@ -1,19 +1,22 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetClose,
-} from "@/components/ui/sheet"; // Assuming Sheet is used for slide-over modal
-import { cn } from "@/lib/utils"; // Utility for combining Tailwind classes
-import { X } from "lucide-react"; // Close icon
-import { Button } from "@/components/ui/button"; // Added Button import
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   GeminiAnalyzedItem,
   GeminiLogistics,
   GeminiPackagingLayer,
 } from "../types";
+
+type VolumeUnit = "m3" | "ft3";
+const M3_TO_FT3 = 35.3147;
 
 interface DigitalManifestModalProps {
   manifestData: GeminiAnalyzedItem[] | null;
@@ -28,6 +31,8 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [volumeUnit, setVolumeUnit] = useState<VolumeUnit>("m3");
+
   const getLogisticsTags = useCallback((logistics: GeminiLogistics): string[] => {
     const tags: string[] = [];
     tags.push(`Fragility: ${logistics.fragility}`);
@@ -44,6 +49,25 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
     [],
   );
 
+  const totalVolumeM3 = useMemo(() => {
+    if (!manifestData) return 0;
+    return manifestData.reduce((total, item) => {
+      const itemVolume = item.packaging_plan.reduce((layerTotal, layer) => {
+        return layerTotal + (layer.packed_volume_m3 || 0);
+      }, 0);
+      return total + itemVolume;
+    }, 0);
+  }, [manifestData]);
+
+  const formatVolume = useCallback((volumeM3: number): string => {
+    if (volumeUnit === "ft3") {
+      return (volumeM3 * M3_TO_FT3).toFixed(2);
+    }
+    return volumeM3.toFixed(2);
+  }, [volumeUnit]);
+
+  const volumeLabel = volumeUnit === "m3" ? "m³" : "ft³";
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md" hideCloseButton={true}> {/* Hide default close button */}
@@ -54,7 +78,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
           </div>
         )}
 
-        <SheetHeader className="relative flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white"> {/* Add relative for absolute positioning of close button */}
+        <SheetHeader className="relative flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white">
           <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
           <SheetClose asChild>
             <button
@@ -66,6 +90,34 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             </button>
           </SheetClose>
         </SheetHeader>
+
+        {/* Total Volume & Unit Toggle */}
+        {manifestData && manifestData.length > 0 && (
+          <div className="flex items-center justify-between border-b bg-muted/30 px-6 py-3">
+            <div className="text-sm">
+              <span className="font-medium text-muted-foreground">Total Volume: </span>
+              <span className="font-bold text-primary">{formatVolume(totalVolumeM3)} {volumeLabel}</span>
+            </div>
+            <div className="flex items-center gap-1 rounded-md border bg-background p-1">
+              <Button
+                variant={volumeUnit === "m3" ? "default" : "ghost"}
+                size="sm"
+                className="h-7 px-3 text-xs"
+                onClick={() => setVolumeUnit("m3")}
+              >
+                m³
+              </Button>
+              <Button
+                variant={volumeUnit === "ft3" ? "default" : "ghost"}
+                size="sm"
+                className="h-7 px-3 text-xs"
+                onClick={() => setVolumeUnit("ft3")}
+              >
+                ft³
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto p-6">
           {!manifestData || manifestData.length === 0 ? (
@@ -100,7 +152,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                         key={layerIndex}
                         className={cn(
                           "mb-2 rounded-md border p-4 shadow-sm",
-                          layerIndex % 2 === 0 ? "bg-secondary/10" : "bg-secondary/5", // Applying alternating background
+                          layerIndex % 2 === 0 ? "bg-secondary/10" : "bg-secondary/5",
                         )}
                       >
                         <h4 className="mb-1 text-sm font-semibold">{layer.layer_order}</h4>
@@ -110,7 +162,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                         </p>
                         {layer.packed_volume_m3 && (
                           <p className="text-sm text-muted-foreground">
-                            Volume: {layer.packed_volume_m3} m³
+                            Volume: {formatVolume(layer.packed_volume_m3)} {volumeLabel}
                           </p>
                         )}
                       </div>
