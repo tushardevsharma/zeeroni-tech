@@ -81,7 +81,7 @@ const Landing = () => {
             <div className="text-center lg:text-left order-1 lg:order-1">
               <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Intelligent Moving</span>
+                <span className="text-sm font-medium text-primary">Smart Tech Enabled Moving</span>
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
