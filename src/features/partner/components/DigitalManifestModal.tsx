@@ -50,14 +50,22 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
   );
 
   const totalVolumeM3 = useMemo(() => {
-    if (!manifestData) return 0;
-    return manifestData.reduce((total, item) => {
-      const itemVolume = item.packaging_plan.reduce((layerTotal, layer) => {
-        return layerTotal + (layer.packed_volume_m3 || 0);
-      }, 0);
-      return total + itemVolume;
+  if (!manifestData) return 0;
+
+  return manifestData.reduce((total, item) => {
+    // 1. Calculate Item Volume: (H * L * W) / 1,000,000 to get m3
+    const { height_cm, length_cm, width_cm } = item.dimensions;
+    const itemVolumeM3 = (height_cm * length_cm * width_cm) / 1_000_000;
+
+    // 2. Calculate Packaging Material Volume from the plan
+    const packingMaterialVolumeM3 = item.packaging_plan.reduce((layerTotal, layer) => {
+      return layerTotal + (layer.packed_volume_m3 || 0);
     }, 0);
-  }, [manifestData]);
+
+    // 3. Sum both and add to the accumulator
+    return total + itemVolumeM3 + packingMaterialVolumeM3;
+  }, 0);
+}, [manifestData]);
 
   const formatVolume = useCallback((volumeM3: number): string => {
     if (volumeUnit === "ft3") {
