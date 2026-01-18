@@ -21,6 +21,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { GenerateInvoiceForm } from "./GenerateInvoiceForm";
 
 type SortField = "moveDate" | "createdAt" | null;
 type SortDirection = "asc" | "desc";
@@ -37,6 +44,9 @@ export const LeadsDashboard: FC = () => {
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [selectedLeadForInvoice, setSelectedLeadForInvoice] = useState<Lead | null>(null);
 
   const toggleLeadExpanded = (leadKey: string) => {
     setExpandedLeads(prev => {
@@ -358,6 +368,7 @@ export const LeadsDashboard: FC = () => {
                         <SortIcon field="createdAt" />
                       </span>
                     </TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -427,10 +438,23 @@ export const LeadsDashboard: FC = () => {
                               {format(new Date(lead.createdAt), "MMM d, yyyy h:mm a")}
                             </span>
                           </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent row expansion
+                                setSelectedLeadForInvoice(lead);
+                                setShowInvoiceForm(true);
+                              }}
+                            >
+                              Generate Invoice
+                            </Button>
+                          </TableCell>
                         </TableRow>
                         <CollapsibleContent asChild>
                           <tr className="bg-muted/30">
-                            <td colSpan={8} className="p-4">
+                            <td colSpan={9} className="p-4">
                               <div className="flex items-start gap-2">
                                 <Info className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                                 <div>
@@ -457,6 +481,16 @@ export const LeadsDashboard: FC = () => {
           )}
         </div>
       </div>
+      <Dialog open={showInvoiceForm} onOpenChange={setShowInvoiceForm}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Generate Invoice</DialogTitle>
+          </DialogHeader>
+          {selectedLeadForInvoice && (
+            <GenerateInvoiceForm lead={selectedLeadForInvoice} />
+          )}
+        </DialogContent>
+      </Dialog>
     </WebLayout>
   );
 };
