@@ -80,11 +80,22 @@ const formSchema = z.object({
 
 type InvoiceFormValues = z.infer<typeof formSchema>;
 
+// Helper to map move size to invoice type
+const getInvoiceTypeFromMoveSize = (moveSize: string): "1BHK" | "2BHK" | "3BHK" | "Custom" => {
+  const normalized = moveSize.toLowerCase().replace(/\s+/g, '');
+  if (normalized.includes('1bhk') || normalized.includes('1 bhk')) return "1BHK";
+  if (normalized.includes('2bhk') || normalized.includes('2 bhk')) return "2BHK";
+  if (normalized.includes('3bhk') || normalized.includes('3 bhk')) return "3BHK";
+  return "Custom";
+};
+
 export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
-  const [invoiceType, setInvoiceType] = useState<"1BHK" | "2BHK" | "3BHK" | "Custom">("Custom");
+  const [invoiceType, setInvoiceType] = useState<"1BHK" | "2BHK" | "3BHK" | "Custom">(() => 
+    getInvoiceTypeFromMoveSize(lead.moveDetails.moveSize)
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { getToken } = useAuth(); // Get getToken from useAuth
-  const { toast } = useToast(); // Get toast instance
+  const { getToken } = useAuth();
+  const { toast } = useToast();
 
 
   const form = useForm<InvoiceFormValues>({
@@ -347,7 +358,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
             control={form.control}
             name="header.dueDate"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col justify-end">
                 <FormLabel>Due Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -355,7 +366,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal h-10 hover:bg-accent hover:text-accent-foreground",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -370,6 +381,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                       initialFocus
+                      className="pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
@@ -457,37 +469,38 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
             <FormField
               control={form.control}
               name="shipTo.moveDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Move Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Move Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal h-10 hover:bg-accent hover:text-accent-foreground",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? format(new Date(field.value), "PPP") : <span>Pick a date</span>}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ? new Date(field.value) : undefined}
+                        onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 
