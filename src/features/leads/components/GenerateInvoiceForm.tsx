@@ -253,7 +253,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
         // Assuming the API returns a file directly
         const blob = await response.blob();
         const contentDisposition = response.headers.get('Content-Disposition');
-        let filename = 'invoice.pdf'; // Default filename
+        let filename = `invoice_${data.header.invoiceNo}.pdf`; // Default filename
 
         if (contentDisposition) {
           const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
