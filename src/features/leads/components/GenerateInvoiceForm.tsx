@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
+import { CalendarIcon, PlusCircle, Trash2, Loader2 } from "lucide-react";
 
 import {
   Form,
@@ -82,6 +82,7 @@ type InvoiceFormValues = z.infer<typeof formSchema>;
 
 export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
   const [invoiceType, setInvoiceType] = useState<"1BHK" | "2BHK" | "3BHK" | "Custom">("Custom");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { getToken } = useAuth(); // Get getToken from useAuth
   const { toast } = useToast(); // Get toast instance
 
@@ -240,6 +241,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const response = await fetch(`${API_BASE_URL}/admin/generate-invoice`, {
         method: 'POST',
@@ -291,6 +293,8 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
         description: `Could not connect to the server: ${error.message}`,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -606,8 +610,9 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Generate Invoice
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isSubmitting ? "Generating..." : "Generate Invoice"}
         </Button>
       </form>
     </Form>
