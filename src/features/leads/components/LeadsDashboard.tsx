@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { GenerateInvoiceForm } from "./GenerateInvoiceForm";
 
-type SortField = "moveDate" | "createdAt" | null;
+type SortField = "moveDate" | "createdAt" | "name" | "moveSize" | null;
 type SortDirection = "asc" | "desc";
 
 export const LeadsDashboard: FC = () => {
@@ -94,17 +94,22 @@ export const LeadsDashboard: FC = () => {
     if (!sortField) return leads;
     
     return [...leads].sort((a, b) => {
-      let dateA: Date, dateB: Date;
+      let comparison = 0;
       
       if (sortField === "moveDate") {
-        dateA = new Date(a.moveDetails.desiredMoveOutDate);
-        dateB = new Date(b.moveDetails.desiredMoveOutDate);
-      } else {
-        dateA = new Date(a.createdAt);
-        dateB = new Date(b.createdAt);
+        const dateA = new Date(a.moveDetails.desiredMoveOutDate);
+        const dateB = new Date(b.moveDetails.desiredMoveOutDate);
+        comparison = dateA.getTime() - dateB.getTime();
+      } else if (sortField === "createdAt") {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        comparison = dateA.getTime() - dateB.getTime();
+      } else if (sortField === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortField === "moveSize") {
+        comparison = a.moveDetails.moveSize.localeCompare(b.moveDetails.moveSize);
       }
       
-      const comparison = dateA.getTime() - dateB.getTime();
       return sortDirection === "asc" ? comparison : -comparison;
     });
   }, [leads, sortField, sortDirection]);
@@ -244,7 +249,7 @@ export const LeadsDashboard: FC = () => {
             )}
             <Button
               onClick={downloadCSV}
-              variant="outline"
+              variant="secondary"
               className="gap-2"
               disabled={leads.length === 0}
             >
@@ -347,9 +352,25 @@ export const LeadsDashboard: FC = () => {
                     </TableHead>
                     <TableHead className="w-8"></TableHead>
                     <TableHead>Lead ID</TableHead>
-                    <TableHead>Name</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("name")}
+                    >
+                      <span className="flex items-center">
+                        Name
+                        <SortIcon field="name" />
+                      </span>
+                    </TableHead>
                     <TableHead>Phone</TableHead>
-                    <TableHead>Move Size</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("moveSize")}
+                    >
+                      <span className="flex items-center">
+                        Move Size
+                        <SortIcon field="moveSize" />
+                      </span>
+                    </TableHead>
                     <TableHead 
                       className="cursor-pointer select-none hover:bg-muted/50"
                       onClick={() => handleSort("moveDate")}
@@ -440,7 +461,7 @@ export const LeadsDashboard: FC = () => {
                           </TableCell>
                           <TableCell>
                             <Button
-                              variant="outline"
+                              variant="secondary"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation(); // Prevent row expansion
@@ -482,9 +503,9 @@ export const LeadsDashboard: FC = () => {
         </div>
       </div>
       <Dialog open={showInvoiceForm} onOpenChange={setShowInvoiceForm}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Generate Invoice</DialogTitle>
+        <DialogContent className="w-[95vw] max-w-4xl h-[95vh] max-h-[95vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="text-xl">Generate Invoice</DialogTitle>
           </DialogHeader>
           {selectedLeadForInvoice && (
             <GenerateInvoiceForm lead={selectedLeadForInvoice} />

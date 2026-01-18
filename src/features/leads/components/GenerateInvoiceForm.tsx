@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -377,26 +378,13 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
         {/* Bill To Section */}
         <div>
           <h3 className="text-lg font-semibold mb-2">Bill To</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="billTo.customer.name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Customer Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="billTo.customer.address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Customer Address</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -418,12 +406,32 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
               )}
             />
           </div>
+          <div className="mt-4">
+            <FormField
+              control={form.control}
+              name="billTo.customer.address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Customer Address</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      {...field} 
+                      rows={3}
+                      placeholder="Enter full billing address"
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         {/* Ship To Section */}
         <div>
           <h3 className="text-lg font-semibold mb-2">Ship To</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <FormField
               control={form.control}
               name="shipTo.address"
@@ -431,7 +439,12 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
                 <FormItem>
                   <FormLabel>Shipping Address</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Textarea 
+                      {...field} 
+                      rows={3}
+                      placeholder="Enter full shipping address"
+                      className="resize-none"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
