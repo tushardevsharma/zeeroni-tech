@@ -10,16 +10,14 @@ import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  GeminiAnalyzedItem,
-  GeminiLogistics,
-  GeminiPackagingLayer,
+  AnalysisResultItem,
 } from "../types";
 
 type VolumeUnit = "m3" | "ft3";
 const M3_TO_FT3 = 35.3147;
 
 interface DigitalManifestModalProps {
-  manifestData: GeminiAnalyzedItem[] | null;
+  manifestData: AnalysisResultItem[] | null;
   isLoading: boolean;
   isOpen: boolean; // Control visibility with this prop
   onClose: () => void;
@@ -33,33 +31,17 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 }) => {
   const [volumeUnit, setVolumeUnit] = useState<VolumeUnit>("m3");
 
-  const getLogisticsTags = useCallback((logistics: GeminiLogistics): string[] => {
-    const tags: string[] = [];
-    tags.push(`Fragility: ${logistics.fragility}`);
-    tags.push(`Stackable: ${logistics.is_stackable ? "Yes" : "No"}`);
-    tags.push(`Disassembly: ${logistics.requires_disassembly ? "Yes" : "No"}`);
-    tags.push(`Priority: ${logistics.handling_priority}`);
-    return tags;
-  }, []);
-
-  const sortPackagingPlan = useCallback(
-    (packagingPlan: GeminiPackagingLayer[]): GeminiPackagingLayer[] => {
-      return [...packagingPlan].sort((a, b) => a.layer_order - b.layer_order);
-    },
-    [],
-  );
-
   const totalVolumeM3 = useMemo(() => {
   if (!manifestData) return 0;
 
   return manifestData.reduce((total, item) => {
     // 1. Calculate Item Volume: (H * L * W) / 1,000,000 to get m3
-    const { height_cm, length_cm, width_cm } = item.dimensions;
-    const itemVolumeM3 = (height_cm * length_cm * width_cm) / 1_000_000;
+    const { dimHeightCm, dimLengthCm, dimWidthCm } = item;
+    const itemVolumeM3 = (dimHeightCm * dimLengthCm * dimWidthCm) / 1_000_000;
 
     // 2. Calculate Packaging Material Volume from the plan
-    const packingMaterialVolumeM3 = item.packaging_plan.reduce((layerTotal, layer) => {
-      return layerTotal + (layer.packed_volume_m3 || 0);
+    const packingMaterialVolumeM3 = item.packagingPlan.reduce((layerTotal, layer) => {
+      return layerTotal + (layer.packedVolumeM3 || 0);
     }, 0);
 
     // 3. Sum both and add to the accumulator
@@ -137,10 +119,10 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
               <div key={index} className="mb-5 rounded-lg border bg-card p-5 shadow-sm">
                 <div className="mb-4 flex items-center justify-between border-b pb-3">
                   <h3 className="text-lg font-bold text-primary">
-                    {item.item} ({item.quantity})
+                    {item.itemName} ({item.itemQuantity})
                   </h3>
                   <span className="text-xs text-muted-foreground">
-                    {item.timestamp_start} - {item.timestamp_end}
+                    {item.scanOffsetStart} - {item.scanOffsetEnd}
                   </span>
                 </div>
 
@@ -148,14 +130,14 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                   <div className="col-span-full">
                     <h4 className="mb-2 text-sm font-bold text-accent">Dimensions</h4>
                     <p className="text-sm text-foreground">
-                      H: {item.dimensions.height_cm}cm | L: {item.dimensions.length_cm}cm | W:{" "}
-                      {item.dimensions.width_cm}cm
+                      H: {item.dimHeightCm}cm | L: {item.dimLengthCm}cm | W:{" "}
+                      {item.dimWidthCm}cm
                     </p>
                   </div>
 
                   <div className="col-span-full">
                     <h4 className="mb-2 text-sm font-bold text-accent">Packaging</h4>
-                    {sortPackagingPlan(item.packaging_plan).map((layer, layerIndex) => (
+                    {item.packagingPlan.map((layer, layerIndex) => (
                       <div
                         key={layerIndex}
                         className={cn(
@@ -163,14 +145,14 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                           layerIndex % 2 === 0 ? "bg-secondary/10" : "bg-secondary/5",
                         )}
                       >
-                        <h4 className="mb-1 text-sm font-semibold">{layer.layer_order}</h4>
+                        <h4 className="mb-1 text-sm font-semibold">Layer {layer.layerOrder}</h4>
                         <p className="text-sm font-medium text-foreground">
-                          {layer.primary_material_type}: {layer.quantity_estimate}{" "}
-                          {layer.unit}
+                          {layer.materialName}: {layer.quantity}{" "}
+                          {layer.unitId}
                         </p>
-                        {layer.packed_volume_m3 && (
+                        {layer.packedVolumeM3 !== undefined && (
                           <p className="text-sm text-muted-foreground">
-                            Volume: {formatVolume(layer.packed_volume_m3)} {volumeLabel}
+                            Volume: {formatVolume(layer.packedVolumeM3)} {volumeLabel}
                           </p>
                         )}
                       </div>
@@ -178,24 +160,24 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                   </div>
 
                   <div className="col-span-full">
-                    <h4 className="mb-2 text-sm font-bold text-accent">Logistics</h4>
+                    <h4 className="mb-2 text-sm font-bold text-accent">Attributes</h4>
                     <div className="flex flex-wrap gap-2">
-                      {getLogisticsTags(item.logistics).map((tag, tagIndex) => (
+                      {item.attributes.map((attribute, attrIndex) => (
                         <span
-                          key={tagIndex}
+                          key={attrIndex}
                           className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
                         >
-                          {tag}
+                          {attribute.key}: {attribute.value}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {item.notes && (
+                  {item.notesRaw && (
                     <div className="col-span-full">
                       <h4 className="mb-2 text-sm font-bold text-accent">Notes</h4>
                       <div className="rounded-md border-l-4 border-accent bg-secondary/30 p-3 text-sm text-foreground">
-                        {item.notes}
+                        {item.notesRaw}
                       </div>
                     </div>
                   )}

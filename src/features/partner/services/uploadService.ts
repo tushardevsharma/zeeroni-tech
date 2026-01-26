@@ -3,6 +3,7 @@ import { useAuth } from "../auth/AuthContext";
 import {
   PresignedUrlResponse,
   ProcessUploadResponse,
+  AnalysisResultItem,
 } from "../types"; // Assuming these types are defined in types/index.ts
 
 export const uploadService = () => {
@@ -13,6 +14,7 @@ export const uploadService = () => {
     const token = getToken();
     const headers: HeadersInit = {
       Authorization: `Bearer ${token}`,
+      "version": import.meta.env.VITE_API_VERSION,
     };
     if (contentType) {
       headers["Content-Type"] = contentType;
@@ -119,7 +121,7 @@ export const uploadService = () => {
 
   const getDigitalManifest = useCallback(async (
     uploadId: string
-  ): Promise<any> => {
+  ): Promise<AnalysisResultItem[]> => {
     const response = await fetch(
       `${API_BASE_URL}/uploads/${uploadId}/analysis`,
       {

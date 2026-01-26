@@ -11,6 +11,7 @@ export const useLeadService = () => {
     return {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
+      "version": import.meta.env.VITE_API_VERSION,
     };
   }, [getToken]);
 

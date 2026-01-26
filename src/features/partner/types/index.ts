@@ -78,3 +78,32 @@ export interface Lead {
   metadata: LeadMetadata;
   createdAt: string;
 }
+
+export interface ItemAttribute {
+  key: string;
+  value: string;
+}
+
+export interface PackagingPlanItem {
+  materialId: number;
+  materialName: string;
+  quantity: number;
+  unitId: string;
+  packedVolumeM3: number;
+  layerOrder: string;
+}
+
+export interface AnalysisResultItem {
+  id: string;
+  itemName: string;
+  itemQuantity: string;
+  scanOffsetStart: string;
+  scanOffsetEnd: string;
+  dimHeightCm: number;
+  dimLengthCm: number;
+  dimWidthCm: number;
+  notesRaw: string | null;
+  attributes: ItemAttribute[];
+  packagingPlan: PackagingPlanItem[];
+}
+
