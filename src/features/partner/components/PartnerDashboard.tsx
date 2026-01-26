@@ -15,6 +15,7 @@ import {
   SurveyUpload,
   GeminiAnalyzedItem,
   UploadStatus,
+  AnalysisResultItem,
 } from "../types"; // Assuming these types are defined
 
 interface PartnerDashboardProps {}
@@ -45,7 +46,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   const [uploads, setUploads] = useState<ClientSurveyUpload[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedManifest, setSelectedManifest] = useState<
-    GeminiAnalyzedItem[] | null
+    AnalysisResultItem[] | null
   >(null);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
   const [isLoadingManifest, setIsLoadingManifest] = useState(false);
@@ -126,7 +127,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   useEffect(() => {
     fetchUploads();
     // Start polling
-    pollingIntervalRef.current = window.setInterval(pollUploadsStatus, 5000);
+    pollingIntervalRef.current = window.setInterval(pollUploadsStatus, 10000);
 
     return () => {
       // Cleanup polling on unmount
