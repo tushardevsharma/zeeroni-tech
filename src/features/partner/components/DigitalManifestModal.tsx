@@ -150,7 +150,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                           {layer.materialName}: {layer.quantity}{" "}
                           {layer.unitId}
                         </p>
-                        {layer.packedVolumeM3 !== undefined && (
+                        {(layer.packedVolumeM3 !== undefined && layer.packedVolumeM3 !== null) && (
                           <p className="text-sm text-muted-foreground">
                             Volume: {formatVolume(layer.packedVolumeM3)} {volumeLabel}
                           </p>
