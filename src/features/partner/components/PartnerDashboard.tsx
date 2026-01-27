@@ -294,9 +294,9 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     switch (status) {
       case "Pending":
       case "Processing":
-        return "bg-accent text-accent-foreground"; // Reusing accent for these statuses
+        return "bg-amber-500 text-white"; // Better contrast for processing states
       case "Queued":
-        return "bg-blue-500 text-white"; // Using a specific blue for queued
+        return "bg-blue-500 text-white";
       case "Completed":
         return "bg-primary text-primary-foreground";
       case "Failed":
