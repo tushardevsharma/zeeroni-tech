@@ -49,7 +49,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     AnalysisResultItem[] | null
   >(null);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
-  const [isLoadingManifest, setIsLoadingManifest] = useState(false);
+  const [loadingManifestId, setLoadingManifestId] = useState<string | null>(null);
 
   // Upload flow states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -308,7 +308,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
 
   const openDigitalManifest = useCallback(
     async (uploadId: string) => {
-      setIsLoadingManifest(true);
+      setLoadingManifestId(uploadId);
       try {
         const manifest = await getDigitalManifest(uploadId);
         setSelectedManifest(manifest);
@@ -316,7 +316,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
       } catch (error: any) {
         showError(error.message || "Failed to fetch digital manifest.");
       } finally {
-        setIsLoadingManifest(false);
+        setLoadingManifestId(null);
       }
     },
     [getDigitalManifest, showError],
@@ -501,9 +501,9 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
                         <Button
                           onClick={() => openDigitalManifest(upload.uploadId)}
                           className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm"
-                          disabled={isLoadingManifest}
+                          disabled={loadingManifestId !== null}
                         >
-                          {isLoadingManifest ? (
+                          {loadingManifestId === upload.uploadId ? (
                             <>
                               <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-r-transparent" />
                               Loading...
@@ -532,7 +532,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
 
       <DigitalManifestModal
         manifestData={selectedManifest}
-        isLoading={isLoadingManifest}
+        isLoading={loadingManifestId !== null}
         isOpen={isModalOpen}
         onClose={closeDigitalManifest}
       />
