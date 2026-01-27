@@ -386,9 +386,9 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
             <h4 className="mb-6 text-center text-xl font-bold text-primary">
               Upload Confirmation
             </h4>
-            <div className="flex flex-wrap gap-6">
-              <div className="flex-1 min-w-[300px]">
-                <video src={filePreviewUrl || ""} controls className="w-full rounded-md bg-black"></video>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="w-full md:flex-1 md:min-w-[300px]">
+                <video src={filePreviewUrl || ""} controls className="w-full max-w-full rounded-md bg-black"></video>
               </div>
               <div className="flex flex-1 flex-col justify-center">
                 <div className="mb-5">
