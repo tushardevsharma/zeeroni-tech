@@ -393,17 +393,25 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
               <div className="flex flex-1 flex-col justify-center">
                 <div className="mb-5">
                   <Label htmlFor="customFileName" className="mb-2 block font-bold text-foreground">
-                    File Name
+                    File Name <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="customFileName"
                     type="text"
                     value={customFileName}
                     onChange={(e) => setCustomFileName(e.target.value)}
-                    placeholder="Enter a custom name for your video"
+                    placeholder="Enter a name for your video (required)"
                     disabled={isUploading}
-                    className="w-full p-3 text-base"
+                    className={cn(
+                      "w-full p-3 text-base",
+                      !customFileName && "border-destructive focus-visible:ring-destructive"
+                    )}
                   />
+                  {!customFileName && (
+                    <p className="mt-1 text-sm text-destructive">
+                      Please enter a file name to enable upload
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-3">
                   <Button
