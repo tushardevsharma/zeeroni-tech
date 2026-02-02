@@ -163,7 +163,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
       }
 
       setSelectedFile(file);
-      setCustomFileName(file.name.split(".").slice(0, -1).join(".")); // Remove extension
+      setCustomFileName(""); // Don't auto-fill, let user enter manually
       setFilePreviewUrl(URL.createObjectURL(file));
     },
     [showError],
