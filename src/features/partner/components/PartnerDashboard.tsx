@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "../auth/AuthContext";
 import { usePartnerNotification } from "../hooks/usePartnerNotification";
 import { uploadService } from "../services/uploadService";
+import { useVideoCompression } from "../hooks/useVideoCompression";
 import { DigitalManifestModal } from "./DigitalManifestModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,14 @@ interface ClientSurveyUpload extends SurveyUpload {
 
 const MAX_FILE_SIZE_MB = 40; // Max upload limit
 
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+}
+
 export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   const { logout: authLogout } = useAuth();
   const { showSuccess, showError, showInfo } = usePartnerNotification();
@@ -40,6 +49,8 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     getDigitalManifest,
     getVideoLink,
   } = uploadService();
+
+  const { compressVideo, isCompressing, progress: compressionProgress } = useVideoCompression();
 
   const fileUploadInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -246,7 +257,6 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
 
     setIsUploading(true);
     setUploadProgress(0);
-    setUploadStatusMessage("Requesting upload URL...");
 
     let finalFileName = customFileName;
     if (!customFileName.includes(".")) {
@@ -256,13 +266,31 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     }
 
     try {
+      // Step 1: Compress video before upload
+      setUploadStatusMessage("Compressing video...");
+      let fileToUpload: File;
+      try {
+        const result = await compressVideo(selectedFile);
+        fileToUpload = result.file;
+        showSuccess(
+          `Video compressed: ${formatFileSize(result.originalSize)} → ${formatFileSize(result.compressedSize)} (${result.compressionRatio}% smaller)`
+        );
+      } catch (compressionError: any) {
+        console.warn("Compression failed, uploading original:", compressionError);
+        showInfo("Compression unavailable — uploading original file.");
+        fileToUpload = selectedFile;
+      }
+
+      // Step 2: Get presigned URL
+      setUploadStatusMessage("Requesting upload URL...");
       const presignedResponse = await getPresignedUrl(
         finalFileName,
-        selectedFile.type,
+        fileToUpload.type,
       );
-      setUploadStatusMessage("Uploading video to secure storage...");
 
-      await uploadFileToS3(presignedResponse.preSignedUrl, selectedFile, (progress) => {
+      // Step 3: Upload to S3
+      setUploadStatusMessage("Uploading video to secure storage...");
+      await uploadFileToS3(presignedResponse.preSignedUrl, fileToUpload, (progress) => {
         setUploadProgress(Math.round(progress));
       });
 
@@ -285,12 +313,15 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     customFileName,
     showError,
     showSuccess,
+    showInfo,
+    compressVideo,
     getPresignedUrl,
     uploadFileToS3,
     processUpload,
     cancelSelection,
     fetchUploads,
   ]);
+
 
   const getStatusClass = useCallback((status: UploadStatus): string => {
     switch (status) {
@@ -436,15 +467,30 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
                     variant="secondary"
                     className="flex-1 p-3 text-base font-bold bg-muted hover:bg-muted/80 text-muted-foreground"
                     onClick={cancelSelection}
-                    disabled={isUploading}
+                    disabled={isUploading || isCompressing}
                   >
                     Cancel
                   </Button>
                 </div>
               </div>
             </div>
+            {/* Compression Progress */}
+            {isCompressing && (
+              <div className="mt-6">
+                <p className="mb-2 text-center font-bold text-foreground">
+                  {compressionProgress.message}
+                  <span className="ml-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-foreground border-r-transparent" />
+                </p>
+                <div className="h-3 w-full rounded-full bg-secondary">
+                  <div
+                    className="h-full rounded-full bg-accent transition-all duration-400 ease-in-out"
+                    style={{ width: `${compressionProgress.percent}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
             {/* Upload Status with Spinner */}
-            {isUploading && (
+            {isUploading && !isCompressing && (
               <div className="mt-6">
                 <p className="mb-2 text-center font-bold text-foreground">
                   {uploadStatusMessage}
