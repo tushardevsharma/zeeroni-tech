@@ -432,7 +432,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
   if (isMobile) {
     return (
       <Sheet open={isOpen} onOpenChange={onClose}>
-        <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md" hideCloseButton={true}>
+        <SheetContent side="right" className="flex w-full h-full flex-col p-0 sm:max-w-md overflow-hidden" hideCloseButton={true}>
           {isLoading && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-lg bg-background/80 text-primary">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-r-transparent" />
@@ -453,7 +453,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             </SheetClose>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto">
             {/* Video Preview for Mobile - collapsible, inside scroll area */}
             {uploadId && (
               <div className="border-b">
