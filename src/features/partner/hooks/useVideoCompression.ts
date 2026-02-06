@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile } from "@ffmpeg/util";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
 export interface CompressionProgress {
   stage: "loading" | "compressing" | "done" | "error";
@@ -51,12 +51,11 @@ export function useVideoCompression() {
       message: "Loading compression engine...",
     });
 
-    // Load single-threaded core (no SharedArrayBuffer needed)
-    // Use jsdelivr CDN which has better CORS support
-    const baseURL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd";
+    // Load single-threaded core — Vite requires ESM (not UMD)
+    const baseURL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm";
     await ffmpeg.load({
-      coreURL: `${baseURL}/ffmpeg-core.js`,
-      wasmURL: `${baseURL}/ffmpeg-core.wasm`,
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
     });
 
     return ffmpeg;
