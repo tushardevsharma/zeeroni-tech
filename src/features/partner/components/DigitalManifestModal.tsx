@@ -426,6 +426,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
   // State for mobile collapsible video
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
   // Mobile: Use Sheet with collapsible video
   if (isMobile) {
@@ -488,7 +489,34 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             />
           </div>
 
-          {manifestData && manifestData.length > 0 && <SummaryBar />}
+          {manifestData && manifestData.length > 0 && (
+            <div className="border-t">
+              <button
+                className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors"
+                onClick={() => setIsSummaryOpen((prev) => !prev)}
+              >
+                <div className="flex items-center gap-2">
+                  <Package className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-bold text-foreground">
+                    Total: {formatVolume(totalVolumeM3)} {volumeLabel}
+                  </span>
+                  {selectedIndices.size < itemCount && (
+                    <span className="text-xs text-muted-foreground">
+                      ({selectedIndices.size}/{itemCount})
+                    </span>
+                  )}
+                </div>
+                {isSummaryOpen ? (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                )}
+              </button>
+              <div className={cn(!isSummaryOpen && "hidden")}>
+                <SummaryBar />
+              </div>
+            </div>
+          )}
         </SheetContent>
       </Sheet>
     );
