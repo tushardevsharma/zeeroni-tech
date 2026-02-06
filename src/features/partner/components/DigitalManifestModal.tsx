@@ -218,6 +218,7 @@ const ManifestContent: FC<{
                 </p>
               </div>
 
+              {item.packagingPlan && item.packagingPlan.length > 0 && (
               <div className="col-span-full">
                 <h4 className="mb-2 text-sm font-bold text-accent">Packaging</h4>
                 {item.packagingPlan.map((layer, layerIndex) => (
@@ -241,6 +242,7 @@ const ManifestContent: FC<{
                   </div>
                 ))}
               </div>
+              )}
 
               <div className="col-span-full">
                 <h4 className="mb-2 text-sm font-bold text-accent">Attributes</h4>
@@ -328,7 +330,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
       const { dimHeightCm, dimLengthCm, dimWidthCm } = item;
       const itemVolumeM3 = (dimHeightCm * dimLengthCm * dimWidthCm) / 1_000_000;
 
-      const packingMaterialVolumeM3 = item.packagingPlan.reduce((layerTotal, layer) => {
+      const packingMaterialVolumeM3 = (item.packagingPlan ?? []).reduce((layerTotal, layer) => {
         return layerTotal + (layer.packedVolumeM3 || 0);
       }, 0);
 
@@ -340,7 +342,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
     const materialMap = new Map<string, AggregatedMaterial>();
 
     selectedItems.forEach((item) => {
-      item.packagingPlan.forEach((layer) => {
+      (item.packagingPlan ?? []).forEach((layer) => {
         const key = `${layer.materialName}__${layer.unitId}`;
         const existing = materialMap.get(key);
         if (existing) {
