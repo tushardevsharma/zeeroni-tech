@@ -9,6 +9,7 @@ import { DigitalManifestModal } from "./DigitalManifestModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import zeeroniLogo from "@/assets/zeeroni-logo.png";
 import WebLayout from "@/components/layout/WebLayout"; // Ensure this is imported once at the top
@@ -63,6 +64,11 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
   const [loadingManifestId, setLoadingManifestId] = useState<string | null>(null);
+
+  // Video preview states
+  const [previewVideoUrl, setPreviewVideoUrl] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [loadingPreviewId, setLoadingPreviewId] = useState<string | null>(null);
 
   // Upload flow states
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -368,6 +374,27 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     setSelectedUploadId(null);
   }, []);
 
+  const openVideoPreview = useCallback(
+    async (uploadId: string) => {
+      setLoadingPreviewId(uploadId);
+      try {
+        const response = await getVideoLink(uploadId);
+        setPreviewVideoUrl(typeof response === 'string' ? response : response.link);
+        setIsPreviewOpen(true);
+      } catch (error: any) {
+        showError(error.message || "Failed to load video preview.");
+      } finally {
+        setLoadingPreviewId(null);
+      }
+    },
+    [getVideoLink, showError],
+  );
+
+  const closeVideoPreview = useCallback(() => {
+    setIsPreviewOpen(false);
+    setPreviewVideoUrl(null);
+  }, []);
+
   return (
     <WebLayout> {/* Use WebLayout to include the shared Header */}
       <div className="mx-auto w-full max-w-6xl flex-grow p-6">
@@ -561,6 +588,21 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
                       )}
                     </div>
                     <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => openVideoPreview(upload.uploadId)}
+                        className="text-sm"
+                        disabled={loadingPreviewId !== null}
+                      >
+                        {loadingPreviewId === upload.uploadId ? (
+                          <>
+                            <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-foreground border-r-transparent" />
+                            Loading...
+                          </>
+                        ) : (
+                          'Preview Video'
+                        )}
+                      </Button>
                       {upload.status === "Completed" && (
                         <Button
                           onClick={() => openDigitalManifest(upload.uploadId)}
@@ -593,6 +635,20 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
           )}
         </div>
       </div> {/* This div closes the content that was inside main */}
+
+      <Dialog open={isPreviewOpen} onOpenChange={(open) => !open && closeVideoPreview()}>
+        <DialogContent className="max-w-3xl p-4">
+          {previewVideoUrl && (
+            <video
+              src={previewVideoUrl}
+              controls
+              autoPlay
+              className="w-full rounded-md bg-black"
+              style={{ maxHeight: "75vh" }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       <DigitalManifestModal
         manifestData={selectedManifest}
