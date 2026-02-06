@@ -137,6 +137,25 @@ export const uploadService = () => {
     return response.json();
   }, [API_BASE_URL, getHeaders]);
 
+  const getVideoLink = useCallback(async (
+    uploadId: string,
+    durationInMinutes: number = 5
+  ): Promise<{ link: string }> => {
+    const response = await fetch(
+      `${API_BASE_URL}/uploads/${uploadId}/link?durationInMinutes=${durationInMinutes}`,
+      {
+        method: "GET",
+        headers: getHeaders(),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch video link");
+    }
+    return response.json();
+  }, [API_BASE_URL, getHeaders]);
+
   return {
     getPresignedUrl,
     uploadFileToS3,
@@ -144,5 +163,6 @@ export const uploadService = () => {
     getUserUploads,
     getUploadStatus,
     getDigitalManifest,
+    getVideoLink,
   };
 };
