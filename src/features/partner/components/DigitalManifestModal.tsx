@@ -453,40 +453,42 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             </SheetClose>
           </SheetHeader>
 
-          {/* Video Preview for Mobile - collapsible */}
-          {uploadId && (
-            <div className="border-b">
-              <button
-                className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors"
-                onClick={() => setIsVideoOpen((prev) => !prev)}
-              >
-                <div className="flex items-center gap-2">
-                  <Play className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-bold text-foreground">Video Preview</span>
+          <div className="flex-1 overflow-y-auto">
+            {/* Video Preview for Mobile - collapsible, inside scroll area */}
+            {uploadId && (
+              <div className="border-b">
+                <button
+                  className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors"
+                  onClick={() => setIsVideoOpen((prev) => !prev)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Play className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-bold text-foreground">Video Preview</span>
+                  </div>
+                  {isVideoOpen ? (
+                    <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </button>
+                <div className={cn("px-4 pb-4", !isVideoOpen && "hidden")}>
+                  <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
                 </div>
-                {isVideoOpen ? (
-                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                )}
-              </button>
-              <div className={cn("px-4 pb-4", !isVideoOpen && "hidden")}>
-                <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="flex-1 overflow-y-auto p-6">
-            <ManifestContent
-              manifestData={manifestData}
-              selectedIndices={selectedIndices}
-              toggleItem={toggleItem}
-              toggleAll={toggleAll}
-              allSelected={allSelected}
-              itemCount={itemCount}
-              formatVolume={formatVolume}
-              volumeLabel={volumeLabel}
-            />
+            <div className="p-6">
+              <ManifestContent
+                manifestData={manifestData}
+                selectedIndices={selectedIndices}
+                toggleItem={toggleItem}
+                toggleAll={toggleAll}
+                allSelected={allSelected}
+                itemCount={itemCount}
+                formatVolume={formatVolume}
+                volumeLabel={volumeLabel}
+              />
+            </div>
           </div>
 
           {manifestData && manifestData.length > 0 && (
