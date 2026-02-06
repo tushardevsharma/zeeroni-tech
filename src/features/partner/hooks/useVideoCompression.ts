@@ -81,20 +81,21 @@ export function useVideoCompression() {
         const fileData = await fetchFile(file);
         await ffmpeg.writeFile(inputName, fileData);
 
-        // WhatsApp-style compression settings:
-        // - Scale to 720p max (maintain aspect ratio)
+        // Fast browser compression settings:
+        // - Scale to 480p max (faster encode than 720p)
         // - H.264 codec for universal compatibility
-        // - CRF 28 for WhatsApp-level quality/size balance
-        // - veryfast preset for speed in browser
-        // - AAC audio at 128k
+        // - CRF 32 for speed-optimized quality/size balance
+        // - ultrafast preset for maximum browser speed
+        // - AAC audio at 96k
         await ffmpeg.exec([
           "-i", inputName,
-          "-vf", "scale=-2:720",
+          "-vf", "scale=-2:480",
           "-c:v", "libx264",
-          "-crf", "28",
-          "-preset", "veryfast",
+          "-crf", "32",
+          "-preset", "ultrafast",
+          "-tune", "fastdecode",
           "-c:a", "aac",
-          "-b:a", "128k",
+          "-b:a", "96k",
           "-movflags", "+faststart",
           "-y", outputName,
         ]);
