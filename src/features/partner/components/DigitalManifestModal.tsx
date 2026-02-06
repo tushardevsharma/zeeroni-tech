@@ -12,8 +12,13 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { X, Package, Play, Loader2 } from "lucide-react";
+import { X, Package, Play, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -120,7 +125,7 @@ const VideoPreview: FC<{
 
   return (
     <div className="rounded-lg border bg-black overflow-hidden">
-      <AspectRatio ratio={16 / 9}>
+      <AspectRatio ratio={9 / 16}>
         <video
           ref={videoRef}
           src={videoUrl}
@@ -419,7 +424,10 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
     </div>
   );
 
-  // Mobile: Use Sheet with video at top
+  // State for mobile collapsible video
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  // Mobile: Use Sheet with collapsible video
   if (isMobile) {
     return (
       <Sheet open={isOpen} onOpenChange={onClose}>
@@ -444,15 +452,28 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             </SheetClose>
           </SheetHeader>
 
-          {/* Video Preview for Mobile - at top */}
+          {/* Video Preview for Mobile - collapsible */}
           {uploadId && (
-            <div className="border-b p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Play className="h-4 w-4 text-primary" />
-                <h4 className="text-sm font-bold text-foreground">Video Preview</h4>
-              </div>
-              <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
-            </div>
+            <Collapsible open={isVideoOpen} onOpenChange={setIsVideoOpen} className="border-b">
+              <CollapsibleTrigger asChild>
+                <button className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <Play className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-bold text-foreground">Video Preview</span>
+                  </div>
+                  {isVideoOpen ? (
+                    <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="px-4 pb-4">
+                  <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           )}
 
           {manifestData && manifestData.length > 0 && <SummaryBar />}
@@ -474,12 +495,12 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
     );
   }
 
-  // Desktop: Use Dialog with side-by-side layout
+  // Desktop: Fullscreen dialog with video on the left
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="flex max-h-[90vh] max-w-6xl flex-col gap-0 p-0 overflow-hidden">
+      <DialogContent className="flex h-[100dvh] w-[100dvw] max-w-none max-h-none flex-col gap-0 p-0 overflow-hidden rounded-none border-0">
         {isLoading && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-lg bg-background/80 text-primary">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/80 text-primary">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-r-transparent" />
             <p className="mt-4 text-lg font-bold">Loading manifest...</p>
           </div>
@@ -490,8 +511,21 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
         </DialogHeader>
 
         <div className="flex flex-1 overflow-hidden">
-          {/* Left side - Manifest Content */}
-          <div className="flex flex-1 flex-col overflow-hidden border-r">
+          {/* Left side - Video Preview */}
+          {uploadId && (
+            <div className="w-[350px] flex-shrink-0 flex flex-col border-r bg-muted/20 p-4 overflow-y-auto">
+              <div className="flex items-center gap-2 mb-3">
+                <Play className="h-4 w-4 text-primary" />
+                <h4 className="text-sm font-bold text-foreground">Video Preview</h4>
+              </div>
+              <div className="sticky top-0">
+                <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
+              </div>
+            </div>
+          )}
+
+          {/* Right side - Manifest Content */}
+          <div className="flex flex-1 flex-col overflow-hidden">
             {manifestData && manifestData.length > 0 && <SummaryBar />}
             <div className="flex-1 overflow-y-auto p-6">
               <ManifestContent
@@ -506,19 +540,6 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
               />
             </div>
           </div>
-
-          {/* Right side - Video Preview */}
-          {uploadId && (
-            <div className="w-[400px] flex-shrink-0 flex flex-col bg-muted/20 p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Play className="h-4 w-4 text-primary" />
-                <h4 className="text-sm font-bold text-foreground">Video Preview</h4>
-              </div>
-              <div className="sticky top-4">
-                <VideoPreview uploadId={uploadId} getVideoLink={getVideoLink} />
-              </div>
-            </div>
-          )}
         </div>
       </DialogContent>
     </Dialog>
