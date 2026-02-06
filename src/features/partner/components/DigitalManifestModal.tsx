@@ -492,7 +492,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
           </div>
 
           {manifestData && manifestData.length > 0 && (
-            <div className="border-t">
+            <div className="flex-shrink-0 border-t">
               <button
                 className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors"
                 onClick={() => setIsSummaryOpen((prev) => !prev)}
