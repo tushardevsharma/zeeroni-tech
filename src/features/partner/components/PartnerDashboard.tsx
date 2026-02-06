@@ -38,6 +38,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     getUserUploads,
     getUploadStatus,
     getDigitalManifest,
+    getVideoLink,
   } = uploadService();
 
   const fileUploadInputRef = useRef<HTMLInputElement>(null);
@@ -48,6 +49,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   const [selectedManifest, setSelectedManifest] = useState<
     AnalysisResultItem[] | null
   >(null);
+  const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
   const [loadingManifestId, setLoadingManifestId] = useState<string | null>(null);
 
@@ -312,6 +314,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
       try {
         const manifest = await getDigitalManifest(uploadId);
         setSelectedManifest(manifest);
+        setSelectedUploadId(uploadId);
         setIsModalOpen(true);
       } catch (error: any) {
         showError(error.message || "Failed to fetch digital manifest.");
@@ -325,6 +328,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   const closeDigitalManifest = useCallback(() => {
     setIsModalOpen(false);
     setSelectedManifest(null);
+    setSelectedUploadId(null);
   }, []);
 
   return (
@@ -543,6 +547,8 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
         isLoading={loadingManifestId !== null}
         isOpen={isModalOpen}
         onClose={closeDigitalManifest}
+        uploadId={selectedUploadId}
+        getVideoLink={getVideoLink}
       />
     </WebLayout>
   );
