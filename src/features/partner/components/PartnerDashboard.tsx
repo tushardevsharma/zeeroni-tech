@@ -27,7 +27,7 @@ interface ClientSurveyUpload extends SurveyUpload {
   videoName: string;
 }
 
-const MAX_FILE_SIZE_MB = 40; // Max upload limit
+const MAX_FILE_SIZE_MB = 100; // Max upload limit
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";
