@@ -266,19 +266,25 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     }
 
     try {
-      // Step 1: Compress video before upload
-      setUploadStatusMessage("Compressing video...");
+      // Step 1: Compress video before upload (only if > 50MB)
+      const COMPRESSION_THRESHOLD = 50 * 1024 * 1024; // 50MB
       let fileToUpload: File;
-      try {
-        const result = await compressVideo(selectedFile);
-        fileToUpload = result.file;
-        showSuccess(
-          `Video compressed: ${formatFileSize(result.originalSize)} → ${formatFileSize(result.compressedSize)} (${result.compressionRatio}% smaller)`
-        );
-      } catch (compressionError: any) {
-        console.error("Video compression failed:", compressionError);
-        showError("Video compression failed. Please try again or use a smaller file.");
-        return;
+
+      if (selectedFile.size > COMPRESSION_THRESHOLD) {
+        setUploadStatusMessage("Compressing video...");
+        try {
+          const result = await compressVideo(selectedFile);
+          fileToUpload = result.file;
+          showSuccess(
+            `Video compressed: ${formatFileSize(result.originalSize)} → ${formatFileSize(result.compressedSize)} (${result.compressionRatio}% smaller)`
+          );
+        } catch (compressionError: any) {
+          console.error("Video compression failed:", compressionError);
+          showError("Video compression failed. Please try again or use a smaller file.");
+          return;
+        }
+      } else {
+        fileToUpload = selectedFile;
       }
 
       // Step 2: Get presigned URL
