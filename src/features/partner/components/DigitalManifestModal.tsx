@@ -371,7 +371,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
   // Summary Bar Component
   const SummaryBar = () => (
-    <div className="border-b bg-muted/30 px-6 py-3 space-y-3">
+    <div className="border-t bg-muted/30 px-6 py-3 space-y-3">
       <div className="flex items-center justify-between">
         <div className="text-sm">
           <span className="font-medium text-muted-foreground">Total Volume: </span>
@@ -475,8 +475,6 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
             </div>
           )}
 
-          {manifestData && manifestData.length > 0 && <SummaryBar />}
-
           <div className="flex-1 overflow-y-auto p-6">
             <ManifestContent
               manifestData={manifestData}
@@ -489,6 +487,8 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
               volumeLabel={volumeLabel}
             />
           </div>
+
+          {manifestData && manifestData.length > 0 && <SummaryBar />}
         </SheetContent>
       </Sheet>
     );
@@ -525,7 +525,6 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
           {/* Right side - Manifest Content */}
           <div className="flex flex-1 flex-col overflow-hidden">
-            {manifestData && manifestData.length > 0 && <SummaryBar />}
             <div className="flex-1 overflow-y-auto p-6">
               <ManifestContent
                 manifestData={manifestData}
@@ -538,6 +537,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
                 volumeLabel={volumeLabel}
               />
             </div>
+            {manifestData && manifestData.length > 0 && <SummaryBar />}
           </div>
         </div>
       </DialogContent>
