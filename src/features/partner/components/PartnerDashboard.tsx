@@ -276,9 +276,9 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
           `Video compressed: ${formatFileSize(result.originalSize)} → ${formatFileSize(result.compressedSize)} (${result.compressionRatio}% smaller)`
         );
       } catch (compressionError: any) {
-        console.warn("Compression failed, uploading original:", compressionError);
-        showInfo("Compression unavailable — uploading original file.");
-        fileToUpload = selectedFile;
+        console.error("Video compression failed:", compressionError);
+        showError("Video compression failed. Please try again or use a smaller file.");
+        return;
       }
 
       // Step 2: Get presigned URL
