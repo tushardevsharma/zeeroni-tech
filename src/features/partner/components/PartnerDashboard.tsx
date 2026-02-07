@@ -410,14 +410,31 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     <WebLayout> {/* Use WebLayout to include the shared Header */}
       <div className="mx-auto w-full max-w-6xl flex-grow p-6">
         <h2 className="mb-4 text-center text-3xl font-bold text-primary">
-          Video Survey
+          Smart Video Survey
         </h2>
-        <p className="mx-auto mb-8 max-w-xl text-center text-muted-foreground">
-          Upload a video of your household items to generate a comprehensive{" "}
-          <b>digital manifest</b>.
-          <br />
-          Simply select a video file or record directly from your device.
+        <p className="mx-auto mb-6 max-w-xl text-center text-muted-foreground">
+          Upload a walkthrough video to generate a comprehensive{" "}
+          <b>digital manifest</b> of your household items.
         </p>
+
+        {/* Smart nudge */}
+        <div className="mx-auto mb-8 max-w-2xl rounded-xl border border-primary/20 bg-primary/5 px-5 py-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+              <span className="text-base">🎙️</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Pro tip: Narrate as you film
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Our smart engine analyses both <span className="font-medium text-foreground">what it sees</span> and{" "}
+                <span className="font-medium text-foreground">what it hears</span>. 
+                Mention item details, conditions, or special handling — your voice helps build a more accurate manifest.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Upload Options Area */}
         <div className="mb-8 flex flex-wrap justify-center gap-5">

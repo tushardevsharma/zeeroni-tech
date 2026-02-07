@@ -1,4 +1,4 @@
-import WebLayout from "@/components/layout/WebLayout"; // Import WebLayout
+import WebLayout from "@/components/layout/WebLayout";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { usePartnerNotification } from "../hooks/usePartnerNotification";
 
@@ -23,6 +24,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export const PartnerAuth: FC<PartnerAuthProps> = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const { showError, showSuccess } = usePartnerNotification();
 
@@ -78,13 +80,23 @@ export const PartnerAuth: FC<PartnerAuthProps> = ({ onLoginSuccess }) => {
 
             <div className="space-y-2 text-left">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...register("password")}
-                className={cn({ "border-destructive focus-visible:ring-destructive": errors.password && touchedFields.password })}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  {...register("password")}
+                  className={cn("pr-10", { "border-destructive focus-visible:ring-destructive": errors.password && touchedFields.password })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
               {errors.password && touchedFields.password && (
                 <p className="text-sm text-destructive">{errors.password.message}</p>
               )}
