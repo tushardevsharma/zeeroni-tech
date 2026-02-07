@@ -1,10 +1,11 @@
-import React, { FC, useState, useEffect, useRef, useCallback } from "react";
+import React, { FC, useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../auth/AuthContext";
 import { usePartnerNotification } from "../hooks/usePartnerNotification";
 import { uploadService } from "../services/uploadService";
 import { useVideoCompression } from "../hooks/useVideoCompression";
+import { useProcessingMessages } from "../hooks/useProcessingMessages";
 import { DigitalManifestModal } from "./DigitalManifestModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,6 +82,16 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
   // Polling state
   const uploadsToPoll = useRef<string[]>([]);
   const pollingIntervalRef = useRef<number | null>(null);
+
+  // Cycling processing messages
+  const processingUploadIds = useMemo(
+    () =>
+      uploads
+        .filter((u) => u.status === "Pending" || u.status === "Processing" || u.status === "Queued")
+        .map((u) => u.uploadId),
+    [uploads],
+  );
+  const { getMessage: getProcessingMessage } = useProcessingMessages(processingUploadIds);
 
   const fetchUploads = useCallback(async () => {
     setIsLoadingUploads(true);
@@ -572,22 +583,31 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
                     </div>
                     <div className="flex flex-col items-start min-w-[120px]">
                       {upload.status !== "Completed" && (
-                        <span
-                          className={cn(
-                            "rounded-md px-2 py-1 text-xs font-bold uppercase",
-                            getStatusClass(upload.status),
-                          )}
-                        >
-                          {upload.status}
+                        <>
+                          <span
+                            className={cn(
+                              "rounded-md px-2 py-1 text-xs font-bold uppercase",
+                              getStatusClass(upload.status),
+                            )}
+                          >
+                            {upload.status}
+                            {(upload.status === "Pending" ||
+                              upload.status === "Processing" ||
+                              upload.status === "Queued") && (
+                                <span className="ml-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-r-transparent" />
+                              )}
+                          </span>
                           {(upload.status === "Pending" ||
                             upload.status === "Processing" ||
                             upload.status === "Queued") && (
-                              <span className="ml-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-r-transparent" />
+                              <span className="mt-1.5 text-xs text-muted-foreground italic transition-opacity duration-500">
+                                {getProcessingMessage(upload.uploadId)}
+                              </span>
                             )}
-                        </span>
+                        </>
                       )}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         variant="outline"
                         onClick={() => openVideoPreview(upload.uploadId)}
