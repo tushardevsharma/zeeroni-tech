@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +40,8 @@ interface DigitalManifestModalProps {
   onClose: () => void;
   uploadId: string | null;
   getVideoLink: (uploadId: string, durationInMinutes?: number) => Promise<{ link: string }>;
+  fileName?: string | null;
+  createdTimestamp?: string | null;
 }
 
 interface AggregatedMaterial {
@@ -281,6 +284,8 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
   onClose,
   uploadId,
   getVideoLink,
+  fileName,
+  createdTimestamp,
 }) => {
   const isMobile = useIsMobile();
   const [volumeUnit, setVolumeUnit] = useState<VolumeUnit>("m3");
@@ -325,10 +330,23 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
     return manifestData.filter((_, i) => selectedIndices.has(i));
   }, [manifestData, selectedIndices]);
 
+  const getItemVolumeM3 = useCallback((item: AnalysisResultItem): number => {
+    // Prefer TotalVolumeM3 attribute if available
+    const totalVolumeAttr = item.attributes?.find(
+      (attr) => attr.key === "TotalVolumeM3"
+    );
+    if (totalVolumeAttr && totalVolumeAttr.value) {
+      const parsed = parseFloat(totalVolumeAttr.value);
+      if (!isNaN(parsed)) return parsed;
+    }
+    // Fallback to dimension calculation
+    const { dimHeightCm, dimLengthCm, dimWidthCm } = item;
+    return (dimHeightCm * dimLengthCm * dimWidthCm) / 1_000_000;
+  }, []);
+
   const totalVolumeM3 = useMemo(() => {
     return selectedItems.reduce((total, item) => {
-      const { dimHeightCm, dimLengthCm, dimWidthCm } = item;
-      const itemVolumeM3 = (dimHeightCm * dimLengthCm * dimWidthCm) / 1_000_000;
+      const itemVolumeM3 = getItemVolumeM3(item);
 
       const packingMaterialVolumeM3 = (item.packagingPlan ?? []).reduce((layerTotal, layer) => {
         return layerTotal + (layer.packedVolumeM3 || 0);
@@ -336,7 +354,7 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
       return total + itemVolumeM3 + packingMaterialVolumeM3;
     }, 0);
-  }, [selectedItems]);
+  }, [selectedItems, getItemVolumeM3]);
 
   const aggregatedMaterials = useMemo((): AggregatedMaterial[] => {
     const materialMap = new Map<string, AggregatedMaterial>();
@@ -443,7 +461,18 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
           )}
 
           <SheetHeader className="relative flex flex-row items-center justify-between border-b bg-primary px-6 py-5 text-white">
-            <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
+            <div>
+              <SheetTitle className="text-xl font-bold text-white">Digital Manifest</SheetTitle>
+              {(fileName || createdTimestamp) && (
+                <p className="mt-1 text-sm text-white/80">
+                  {fileName && <span className="font-medium">{fileName}</span>}
+                  {fileName && createdTimestamp && <span className="mx-1.5">•</span>}
+                  {createdTimestamp && (
+                    <span>{format(new Date(createdTimestamp), "MMM d, yyyy 'at' h:mm a")}</span>
+                  )}
+                </p>
+              )}
+            </div>
             <SheetClose asChild>
               <button
                 onClick={onClose}
@@ -539,6 +568,15 @@ export const DigitalManifestModal: FC<DigitalManifestModalProps> = ({
 
         <DialogHeader className="border-b bg-primary px-6 py-5">
           <DialogTitle className="text-xl font-bold text-white">Digital Manifest</DialogTitle>
+          {(fileName || createdTimestamp) && (
+            <p className="mt-1 text-sm text-white/80">
+              {fileName && <span className="font-medium">{fileName}</span>}
+              {fileName && createdTimestamp && <span className="mx-1.5">•</span>}
+              {createdTimestamp && (
+                <span>{format(new Date(createdTimestamp), "MMM d, yyyy 'at' h:mm a")}</span>
+              )}
+            </p>
+          )}
         </DialogHeader>
 
         <div className="flex flex-1 overflow-hidden">

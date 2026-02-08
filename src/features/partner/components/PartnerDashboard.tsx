@@ -63,6 +63,8 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
     AnalysisResultItem[] | null
   >(null);
   const [selectedUploadId, setSelectedUploadId] = useState<string | null>(null);
+  const [selectedUploadFileName, setSelectedUploadFileName] = useState<string | null>(null);
+  const [selectedUploadTimestamp, setSelectedUploadTimestamp] = useState<string | null>(null);
   const [isLoadingUploads, setIsLoadingUploads] = useState(false);
   const [loadingManifestId, setLoadingManifestId] = useState<string | null>(null);
 
@@ -367,8 +369,11 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
       setLoadingManifestId(uploadId);
       try {
         const manifest = await getDigitalManifest(uploadId);
+        const upload = uploads.find((u) => u.uploadId === uploadId);
         setSelectedManifest(manifest);
         setSelectedUploadId(uploadId);
+        setSelectedUploadFileName(upload?.fileName || upload?.videoName || null);
+        setSelectedUploadTimestamp(upload?.createdTimestamp || null);
         setIsModalOpen(true);
       } catch (error: any) {
         showError(error.message || "Failed to fetch digital manifest.");
@@ -376,13 +381,15 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
         setLoadingManifestId(null);
       }
     },
-    [getDigitalManifest, showError],
+    [getDigitalManifest, showError, uploads],
   );
 
   const closeDigitalManifest = useCallback(() => {
     setIsModalOpen(false);
     setSelectedManifest(null);
     setSelectedUploadId(null);
+    setSelectedUploadFileName(null);
+    setSelectedUploadTimestamp(null);
   }, []);
 
   const openVideoPreview = useCallback(
@@ -694,6 +701,8 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
         onClose={closeDigitalManifest}
         uploadId={selectedUploadId}
         getVideoLink={getVideoLink}
+        fileName={selectedUploadFileName}
+        createdTimestamp={selectedUploadTimestamp}
       />
     </WebLayout>
   );
