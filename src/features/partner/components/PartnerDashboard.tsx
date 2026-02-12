@@ -437,7 +437,7 @@ export const PartnerDashboard: FC<PartnerDashboardProps> = () => {
               <p className="mt-1 text-sm text-muted-foreground">
                 Our smart engine analyses both <span className="font-medium text-foreground">what it sees</span> and{" "}
                 <span className="font-medium text-foreground">what it hears</span>. 
-                Mention item details, conditions, or special handling — your voice helps build a more accurate manifest.
+                Mention item details, conditions, or special handling - your voice helps build a more accurate manifest.
               </p>
             </div>
           </div>
