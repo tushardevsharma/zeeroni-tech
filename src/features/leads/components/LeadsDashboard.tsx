@@ -1,11 +1,12 @@
 import React, { FC, useState, useEffect, useCallback, useMemo } from "react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/partner/auth/AuthContext";
 import { useLeadService } from "../services/leadService";
 import { Lead } from "../types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RefreshCw, Phone, Calendar, Home, User, Clock, Info, ChevronDown, ChevronUp, Download, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { RefreshCw, Phone, Calendar, Home, User, Clock, Info, ChevronDown, ChevronUp, Download, ArrowUpDown, ArrowUp, ArrowDown, Truck } from "lucide-react";
 import WebLayout from "@/components/layout/WebLayout";
 import {
   Table,
@@ -36,6 +37,7 @@ export const LeadsDashboard: FC = () => {
   const { logout: authLogout } = useAuth();
   const { getLeads } = useLeadService();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -460,17 +462,30 @@ export const LeadsDashboard: FC = () => {
                             </span>
                           </TableCell>
                           <TableCell>
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation(); // Prevent row expansion
-                                setSelectedLeadForInvoice(lead);
-                                setShowInvoiceForm(true);
-                              }}
-                            >
-                              Generate Invoice
-                            </Button>
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="gap-1.5"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/moves?leadId=${encodeURIComponent(lead.leadKey)}&leadName=${encodeURIComponent(lead.name)}`);
+                                }}
+                              >
+                                <Truck className="h-3.5 w-3.5" /> Plan a Move
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedLeadForInvoice(lead);
+                                  setShowInvoiceForm(true);
+                                }}
+                              >
+                                Generate Invoice
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                         <CollapsibleContent asChild>

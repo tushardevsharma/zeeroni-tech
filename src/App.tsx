@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./features/partner/auth/AuthContext";
 import { PartnerPage } from "./features/partner/PartnerPage";
 import { LeadsPage } from "./features/leads/LeadsPage";
+import { MovesPage } from "./features/moves/MovesPage";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/complete" element={<Complete />} />
             <Route path="/partner" element={<PartnerPage />} />
             <Route path="/leads" element={<LeadsPage />} />
+            <Route path="/moves/*" element={<MovesPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
