@@ -18,7 +18,8 @@ const Header = () => {
   const isInFlow = ['/address', '/scan', '/inventory', '/quote', '/schedule', '/tracking', '/verification', '/complete'].includes(location.pathname);
   const isPartnerRoute = location.pathname === '/partner';
   const isLeadsRoute = location.pathname === '/leads';
-  const showLogout = isAuthenticated && (isPartnerRoute || isLeadsRoute);
+  const isMovesRoute = location.pathname.startsWith('/moves');
+  const showLogout = isAuthenticated && (isPartnerRoute || isLeadsRoute || isMovesRoute);
 
   const navLinks = [
     { href: '/#features', label: 'Features' },
