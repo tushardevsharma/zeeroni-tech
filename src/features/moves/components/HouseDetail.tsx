@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { moveService } from "../services/moveService";
+import { useMoveService } from "../services/moveService";
 import { MoveHouse, MoveRoom } from "../types";
 import WebLayout from "@/components/layout/WebLayout";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ export const HouseDetail: FC = () => {
   const { moveId, houseId } = useParams<{ moveId: string; houseId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const moveService = useMoveService();
   const [house, setHouse] = useState<MoveHouse | null>(null);
   const [rooms, setRooms] = useState<MoveRoom[]>([]);
   const [loading, setLoading] = useState(true);

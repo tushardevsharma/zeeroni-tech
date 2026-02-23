@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { moveService } from "../services/moveService";
+import { useMoveService } from "../services/moveService";
 import { Move, MoveHouse, MoveLogistics, MoveStatus, HouseType } from "../types";
 import WebLayout from "@/components/layout/WebLayout";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ export const MoveDetail: FC = () => {
   const { moveId } = useParams<{ moveId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const moveService = useMoveService();
   const [move, setMove] = useState<Move | null>(null);
   const [houses, setHouses] = useState<MoveHouse[]>([]);
   const [logistics, setLogistics] = useState<MoveLogistics | null>(null);

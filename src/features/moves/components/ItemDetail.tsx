@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { moveService } from "../services/moveService";
+import { useMoveService } from "../services/moveService";
 import { ItemStatus, ItemQualityControl, ItemPhoto } from "../types";
 import WebLayout from "@/components/layout/WebLayout";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export const ItemDetail: FC = () => {
   const { moveId, itemId } = useParams<{ moveId: string; itemId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const moveService = useMoveService();
   const [item, setItem] = useState<ItemStatus | null>(null);
   const [qc, setQc] = useState<ItemQualityControl | null>(null);
   const [photos, setPhotos] = useState<ItemPhoto[]>([]);

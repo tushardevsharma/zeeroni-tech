@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
-import { moveService } from "../services/moveService";
+import { useMoveService } from "../services/moveService";
 import { Move, MoveStatus } from "../types";
 import WebLayout from "@/components/layout/WebLayout";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export const MoveCommandCenter: FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const moveService = useMoveService();
   const [moves, setMoves] = useState<Move[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
