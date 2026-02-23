@@ -42,6 +42,7 @@ export const MoveCommandCenter: FC = () => {
   const [newMoveDate, setNewMoveDate] = useState("");
   const [newLeadId, setNewLeadId] = useState("");
   const [newLeadName, setNewLeadName] = useState("");
+  const [newQuotedAmount, setNewQuotedAmount] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [creatingMove, setCreatingMove] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -78,12 +79,19 @@ export const MoveCommandCenter: FC = () => {
     }
     setCreatingMove(true);
     try {
-      await moveService.createMove({ leadId: newLeadId, moveDate: newMoveDate, leadName: newLeadName });
+      const quotedAmount = newQuotedAmount.trim() ? Number(newQuotedAmount) : undefined;
+      await moveService.createMove({
+        leadId: newLeadId,
+        moveDate: newMoveDate,
+        leadName: newLeadName,
+        ...(quotedAmount != null && !Number.isNaN(quotedAmount) && { logistics: { quotedAmount } }),
+      });
       toast({ description: "Move created successfully!" });
       setShowCreateDialog(false);
       setNewMoveDate("");
       setNewLeadId("");
       setNewLeadName("");
+      setNewQuotedAmount("");
       fetchMoves();
     } finally {
       setCreatingMove(false);
@@ -262,6 +270,17 @@ export const MoveCommandCenter: FC = () => {
               <div className="space-y-2">
                 <Label>Move Date</Label>
                 <Input type="date" value={newMoveDate} onChange={(e) => setNewMoveDate(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label>Quoted Amount (optional)</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  value={newQuotedAmount}
+                  onChange={(e) => setNewQuotedAmount(e.target.value)}
+                  placeholder="e.g. 1500.00"
+                />
               </div>
             </div>
             <DialogFooter>

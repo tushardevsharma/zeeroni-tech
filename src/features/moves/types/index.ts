@@ -82,7 +82,12 @@ export interface ItemPhoto {
 
 export interface CreateMoveRequest {
   leadId: string;
+  customerName?: string;
+  status?: MoveStatus;
   moveDate: string;
+  logistics?: {
+    quotedAmount?: number;
+  };
 }
 
 export interface CreateMoveHouseRequest {

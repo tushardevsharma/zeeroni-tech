@@ -129,15 +129,21 @@ export function createMoveService(getToken: () => string | null) {
     },
 
     async createMove(req: CreateMoveRequest & { leadName?: string }): Promise<Move> {
+      const customerName = req.leadName ?? req.customerName ?? null;
+      const status = req.status != null ? toApiStatus(req.status) : "LeadConverted";
+      const body: Record<string, unknown> = {
+        leadId: req.leadId,
+        customerName,
+        status,
+        moveDate: req.moveDate ?? null,
+      };
+      if (req.logistics?.quotedAmount != null) {
+        body.logistics = { quotedAmount: req.logistics.quotedAmount };
+      }
       const res = await fetch(`${base}/moves`, {
         method: "POST",
         headers: headers(),
-        body: JSON.stringify({
-          leadId: req.leadId,
-          customerName: req.leadName ?? req.customerName ?? null,
-          moveDate: req.moveDate ?? null,
-          status: "LeadConverted",
-        }),
+        body: JSON.stringify(body),
       });
       await checkResp(res);
       const m = await res.json();
