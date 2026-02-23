@@ -260,10 +260,10 @@ export const LeadsDashboard: FC = () => {
             </Button>
             <Button
               onClick={fetchLeads}
-              disabled={isLoading}
               className="gap-2"
+              loading={isLoading}
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw className="h-4 w-4" />
               Refresh
             </Button>
           </div>

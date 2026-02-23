@@ -17,8 +17,9 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 import {
-  ArrowLeft, Package, ShieldCheck, Gem, ChevronDown, Brain, Camera, Star, Trash2, Plus, ImageIcon,
+  ArrowLeft, Package, ShieldCheck, Gem, ChevronDown, Brain, Camera, Star, Trash2, Plus, ImageIcon, Loader2,
 } from "lucide-react";
 
 export const ItemDetail: FC = () => {
@@ -35,6 +36,9 @@ export const ItemDetail: FC = () => {
   const [showPhotoDialog, setShowPhotoDialog] = useState(false);
   const [newPhotoUrl, setNewPhotoUrl] = useState("");
   const [newPhotoType, setNewPhotoType] = useState<"before" | "after" | "damage">("before");
+  const [actionLoading, setActionLoading] = useState<"packed" | "highValue" | "fragile" | null>(null);
+  const [addingPhoto, setAddingPhoto] = useState(false);
+  const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
 
   const fetchData = async () => {
     if (!itemId) return;
@@ -56,44 +60,69 @@ export const ItemDetail: FC = () => {
 
   const togglePacked = async () => {
     if (!item) return;
-    await moveService.updateItem(item.id, {
-      isPacked: !item.isPacked,
-      packedAt: !item.isPacked ? new Date().toISOString() : undefined,
-    });
-    toast({ description: item.isPacked ? "Marked as not packed" : "Marked as packed!" });
-    fetchData();
+    setActionLoading("packed");
+    try {
+      await moveService.updateItem(item.id, {
+        isPacked: !item.isPacked,
+        packedAt: !item.isPacked ? new Date().toISOString() : undefined,
+      });
+      toast({ description: item.isPacked ? "Marked as not packed" : "Marked as packed!" });
+      fetchData();
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const toggleHighValue = async () => {
     if (!item) return;
-    await moveService.updateItem(item.id, { isHighValue: !item.isHighValue });
-    fetchData();
+    setActionLoading("highValue");
+    try {
+      await moveService.updateItem(item.id, { isHighValue: !item.isHighValue });
+      fetchData();
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const toggleFragile = async () => {
     if (!item) return;
-    await moveService.updateItem(item.id, { isFragile: !item.isFragile });
-    fetchData();
+    setActionLoading("fragile");
+    try {
+      await moveService.updateItem(item.id, { isFragile: !item.isFragile });
+      fetchData();
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const handleAddPhoto = async () => {
     if (!item || !newPhotoUrl) return;
-    await moveService.addPhoto({
-      inventoryItemId: item.inventoryItemId,
-      photoUrl: newPhotoUrl,
-      photoType: newPhotoType,
-      capturedBy: "Admin",
-    });
-    toast({ description: "Photo added!" });
-    setShowPhotoDialog(false);
-    setNewPhotoUrl("");
-    fetchData();
+    setAddingPhoto(true);
+    try {
+      await moveService.addPhoto({
+        inventoryItemId: item.inventoryItemId,
+        photoUrl: newPhotoUrl,
+        photoType: newPhotoType,
+        capturedBy: "Admin",
+      });
+      toast({ description: "Photo added!" });
+      setShowPhotoDialog(false);
+      setNewPhotoUrl("");
+      fetchData();
+    } finally {
+      setAddingPhoto(false);
+    }
   };
 
   const handleDeletePhoto = async (id: string) => {
-    await moveService.deletePhoto(id);
-    toast({ description: "Photo removed" });
-    fetchData();
+    setDeletingPhotoId(id);
+    try {
+      await moveService.deletePhoto(id);
+      toast({ description: "Photo removed" });
+      fetchData();
+    } finally {
+      setDeletingPhotoId(null);
+    }
   };
 
   if (loading) {
@@ -142,8 +171,8 @@ export const ItemDetail: FC = () => {
           <CardHeader><CardTitle className="text-lg">Item Status</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors" onClick={togglePacked}>
-                <Checkbox checked={item.isPacked} />
+              <div className={cn("flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors", actionLoading === "packed" && "pointer-events-none opacity-90")} onClick={togglePacked}>
+                {actionLoading === "packed" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Checkbox checked={item.isPacked} />}
                 <div>
                   <p className="font-medium text-sm">Packed</p>
                   {item.isPacked && item.packedAt && (
@@ -153,15 +182,15 @@ export const ItemDetail: FC = () => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors" onClick={toggleHighValue}>
-                <Checkbox checked={item.isHighValue} />
+              <div className={cn("flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors", actionLoading === "highValue" && "pointer-events-none opacity-90")} onClick={toggleHighValue}>
+                {actionLoading === "highValue" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Checkbox checked={item.isHighValue} />}
                 <div className="flex items-center gap-1.5">
                   <Gem className="h-4 w-4 text-amber-500" />
                   <p className="font-medium text-sm">High Value</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors" onClick={toggleFragile}>
-                <Checkbox checked={item.isFragile} />
+              <div className={cn("flex items-center gap-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors", actionLoading === "fragile" && "pointer-events-none opacity-90")} onClick={toggleFragile}>
+                {actionLoading === "fragile" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Checkbox checked={item.isFragile} />}
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="h-4 w-4 text-destructive" />
                   <p className="font-medium text-sm">Fragile</p>
@@ -254,7 +283,7 @@ export const ItemDetail: FC = () => {
                       <div key={photo.id} className="group relative rounded-lg border overflow-hidden">
                         <img src={photo.photoUrl} alt={photo.photoType} className="w-full aspect-square object-cover" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <Button variant="ghost" size="sm" className="text-white" onClick={() => handleDeletePhoto(photo.id)}>
+                          <Button variant="ghost" size="sm" className="text-white" onClick={() => handleDeletePhoto(photo.id)} loading={deletingPhotoId === photo.id}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -293,7 +322,7 @@ export const ItemDetail: FC = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowPhotoDialog(false)}>Cancel</Button>
-              <Button onClick={handleAddPhoto}>Add Photo</Button>
+              <Button onClick={handleAddPhoto} loading={addingPhoto}>Add Photo</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

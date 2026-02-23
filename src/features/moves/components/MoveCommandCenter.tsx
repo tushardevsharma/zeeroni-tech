@@ -43,6 +43,8 @@ export const MoveCommandCenter: FC = () => {
   const [newLeadId, setNewLeadId] = useState("");
   const [newLeadName, setNewLeadName] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [creatingMove, setCreatingMove] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchMoves = async () => {
     setLoading(true);
@@ -74,19 +76,29 @@ export const MoveCommandCenter: FC = () => {
       toast({ description: "Please fill all required fields", variant: "destructive" });
       return;
     }
-    await moveService.createMove({ leadId: newLeadId, moveDate: newMoveDate, leadName: newLeadName });
-    toast({ description: "Move created successfully!" });
-    setShowCreateDialog(false);
-    setNewMoveDate("");
-    setNewLeadId("");
-    setNewLeadName("");
-    fetchMoves();
+    setCreatingMove(true);
+    try {
+      await moveService.createMove({ leadId: newLeadId, moveDate: newMoveDate, leadName: newLeadName });
+      toast({ description: "Move created successfully!" });
+      setShowCreateDialog(false);
+      setNewMoveDate("");
+      setNewLeadId("");
+      setNewLeadName("");
+      fetchMoves();
+    } finally {
+      setCreatingMove(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
-    await moveService.deleteMove(id);
-    toast({ description: "Move deleted" });
-    fetchMoves();
+    setDeletingId(id);
+    try {
+      await moveService.deleteMove(id);
+      toast({ description: "Move deleted" });
+      fetchMoves();
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const filteredMoves = filterStatus === "all" ? moves : moves.filter((m) => m.status === filterStatus);
@@ -217,6 +229,7 @@ export const MoveCommandCenter: FC = () => {
                               size="sm"
                               className="text-destructive hover:text-destructive"
                               onClick={() => handleDelete(move.id)}
+                              loading={deletingId === move.id}
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
@@ -253,7 +266,7 @@ export const MoveCommandCenter: FC = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-              <Button onClick={handleCreate} className="gap-2">
+              <Button onClick={handleCreate} className="gap-2" loading={creatingMove}>
                 <ArrowRight className="h-4 w-4" /> Create Move
               </Button>
             </DialogFooter>

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ArrowLeft, Plus, Home, Eye, Trash2, Building2, MapPin, TruckIcon, DollarSign, Users, Gauge,
+  ArrowLeft, Plus, Home, Eye, Trash2, Building2, MapPin, TruckIcon, DollarSign, Users, Gauge, Loader2,
 } from "lucide-react";
 
 const STATUS_OPTIONS: MoveStatus[] = ["lead_converted", "scheduled", "in_progress", "completed", "cancelled"];
@@ -43,6 +43,9 @@ export const MoveDetail: FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAddHouse, setShowAddHouse] = useState(false);
   const [newHouse, setNewHouse] = useState({ address: "", type: "Source" as HouseType, floor: 0, hasLift: false, notes: "" });
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const [addingHouse, setAddingHouse] = useState(false);
+  const [deletingHouseId, setDeletingHouseId] = useState<string | null>(null);
 
   const fetchData = async () => {
     if (!moveId) return;
@@ -62,24 +65,39 @@ export const MoveDetail: FC = () => {
 
   const handleStatusChange = async (status: MoveStatus) => {
     if (!moveId) return;
-    await moveService.updateMoveStatus(moveId, status);
-    toast({ description: `Status updated to ${STATUS_LABELS[status]}` });
-    fetchData();
+    setStatusUpdating(true);
+    try {
+      await moveService.updateMoveStatus(moveId, status);
+      toast({ description: `Status updated to ${STATUS_LABELS[status]}` });
+      fetchData();
+    } finally {
+      setStatusUpdating(false);
+    }
   };
 
   const handleAddHouse = async () => {
     if (!moveId || !newHouse.address) return;
-    await moveService.createHouse({ moveId, ...newHouse });
-    toast({ description: "House added!" });
-    setShowAddHouse(false);
-    setNewHouse({ address: "", type: "Source", floor: 0, hasLift: false, notes: "" });
-    fetchData();
+    setAddingHouse(true);
+    try {
+      await moveService.createHouse({ moveId, ...newHouse });
+      toast({ description: "House added!" });
+      setShowAddHouse(false);
+      setNewHouse({ address: "", type: "Source", floor: 0, hasLift: false, notes: "" });
+      fetchData();
+    } finally {
+      setAddingHouse(false);
+    }
   };
 
   const handleDeleteHouse = async (id: string) => {
-    await moveService.deleteHouse(id);
-    toast({ description: "House removed" });
-    fetchData();
+    setDeletingHouseId(id);
+    try {
+      await moveService.deleteHouse(id);
+      toast({ description: "House removed" });
+      fetchData();
+    } finally {
+      setDeletingHouseId(null);
+    }
   };
 
   if (loading) {
@@ -120,7 +138,8 @@ export const MoveDetail: FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Select value={move.status} onValueChange={(v) => handleStatusChange(v as MoveStatus)}>
+            {statusUpdating && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+            <Select value={move.status} onValueChange={(v) => handleStatusChange(v as MoveStatus)} disabled={statusUpdating}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
@@ -164,7 +183,7 @@ export const MoveDetail: FC = () => {
                         }>
                           {house.type}
                         </Badge>
-                        <Button variant="ghost" size="sm" className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDeleteHouse(house.id)}>
+                        <Button variant="ghost" size="sm" className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDeleteHouse(house.id)} loading={deletingHouseId === house.id}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -266,7 +285,7 @@ export const MoveDetail: FC = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowAddHouse(false)}>Cancel</Button>
-              <Button onClick={handleAddHouse}>Add House</Button>
+              <Button onClick={handleAddHouse} loading={addingHouse}>Add House</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

@@ -115,6 +115,7 @@ const VideoPreview: FC<{
           size="sm"
           className="mt-3"
           onClick={fetchVideoLink}
+          loading={isLoadingVideo}
         >
           Retry
         </Button>

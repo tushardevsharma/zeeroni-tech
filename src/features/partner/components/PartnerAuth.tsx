@@ -102,14 +102,7 @@ export const PartnerAuth: FC<PartnerAuthProps> = ({ onLoginSuccess }) => {
               )}
             </div>
 
-            <Button type="submit" className="mt-6 w-full" disabled={!isValid || isLoading}>
-              {isLoading && (
-                <span
-                  className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-r-transparent"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              )}
+            <Button type="submit" className="mt-6 w-full" disabled={!isValid} loading={isLoading}>
               Login
             </Button>
           </form>

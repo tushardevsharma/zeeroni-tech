@@ -71,6 +71,7 @@ export const RoomDetail: FC = () => {
   const [selectedAnalysisIds, setSelectedAnalysisIds] = useState<Set<string>>(new Set());
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!houseId || !roomId) return;
@@ -245,9 +246,14 @@ export const RoomDetail: FC = () => {
   }, [roomId, selectedAnalysisIds, moveService, toast, fetchData]);
 
   const handleDeleteItem = useCallback(async (id: string) => {
-    await moveService.deleteItem(id);
-    toast({ description: "Item removed" });
-    fetchData();
+    setDeletingItemId(id);
+    try {
+      await moveService.deleteItem(id);
+      toast({ description: "Item removed" });
+      fetchData();
+    } finally {
+      setDeletingItemId(null);
+    }
   }, [moveService, toast, fetchData]);
 
   if (loading) {
@@ -446,7 +452,7 @@ export const RoomDetail: FC = () => {
                           <Button variant="outline" size="sm" className="gap-1" onClick={() => navigate(`/moves/${moveId}/items/${item.id}`)}>
                             <Eye className="h-3.5 w-3.5" /> Details
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDeleteItem(item.id)}>
+                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleDeleteItem(item.id)} loading={deletingItemId === item.id}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -488,8 +494,7 @@ export const RoomDetail: FC = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowAnalysisDialog(false)}>Cancel</Button>
-              <Button onClick={confirmImport} disabled={selectedAnalysisIds.size === 0 || importing}>
-                {importing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              <Button onClick={confirmImport} disabled={selectedAnalysisIds.size === 0} loading={importing}>
                 Add {selectedAnalysisIds.size} item(s) to room
               </Button>
             </DialogFooter>

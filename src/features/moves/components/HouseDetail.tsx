@@ -35,6 +35,8 @@ export const HouseDetail: FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [newRoom, setNewRoom] = useState({ name: "", notes: "" });
+  const [addingRoom, setAddingRoom] = useState(false);
+  const [deletingRoomId, setDeletingRoomId] = useState<string | null>(null);
 
   const fetchData = async () => {
     if (!moveId || !houseId) return;
@@ -52,17 +54,27 @@ export const HouseDetail: FC = () => {
 
   const handleAddRoom = async () => {
     if (!houseId || !newRoom.name) return;
-    await moveService.createRoom({ houseId, name: newRoom.name, notes: newRoom.notes || undefined });
-    toast({ description: "Room added!" });
-    setShowAddRoom(false);
-    setNewRoom({ name: "", notes: "" });
-    fetchData();
+    setAddingRoom(true);
+    try {
+      await moveService.createRoom({ houseId, name: newRoom.name, notes: newRoom.notes || undefined });
+      toast({ description: "Room added!" });
+      setShowAddRoom(false);
+      setNewRoom({ name: "", notes: "" });
+      fetchData();
+    } finally {
+      setAddingRoom(false);
+    }
   };
 
   const handleDeleteRoom = async (id: string) => {
-    await moveService.deleteRoom(id);
-    toast({ description: "Room removed" });
-    fetchData();
+    setDeletingRoomId(id);
+    try {
+      await moveService.deleteRoom(id);
+      toast({ description: "Room removed" });
+      fetchData();
+    } finally {
+      setDeletingRoomId(null);
+    }
   };
 
   if (loading) {
@@ -134,7 +146,7 @@ export const HouseDetail: FC = () => {
                   <CardContent className="p-5 space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-foreground">{room.name}</h3>
-                      <Button variant="ghost" size="sm" className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDeleteRoom(room.id)}>
+                      <Button variant="ghost" size="sm" className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDeleteRoom(room.id)} loading={deletingRoomId === room.id}>
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
@@ -177,7 +189,7 @@ export const HouseDetail: FC = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowAddRoom(false)}>Cancel</Button>
-              <Button onClick={handleAddRoom}>Add Room</Button>
+              <Button onClick={handleAddRoom} loading={addingRoom}>Add Room</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
