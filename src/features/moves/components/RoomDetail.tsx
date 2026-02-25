@@ -49,6 +49,7 @@ export const RoomDetail: FC = () => {
   const { compressVideo, isCompressing, progress: compressionProgress } = useVideoCompression();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const [room, setRoom] = useState<MoveRoom | null>(null);
   const [items, setItems] = useState<ItemStatus[]>([]);
@@ -141,6 +142,7 @@ export const RoomDetail: FC = () => {
     setUploadProgress(0);
     setUploadStatusMessage("");
     if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
   }, []);
 
   const onUpload = useCallback(async () => {
@@ -318,21 +320,38 @@ export const RoomDetail: FC = () => {
                 </div>
               </div>
 
-              {/* Upload: file picker or confirmation */}
+              {/* Upload: file picker, record directly, or confirmation */}
               {!selectedFile ? (
-                <div
-                  className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="video/*"
-                    className="hidden"
-                    onChange={onFileSelected}
-                  />
-                  <p className="text-lg font-bold text-foreground">Upload a video file</p>
-                  <p className="mt-1 text-sm text-muted-foreground">MP4 or MOV, max {MAX_FILE_SIZE_MB}MB</p>
+                <div className="flex flex-wrap gap-4">
+                  <div
+                    className="flex min-w-[200px] flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={onFileSelected}
+                    />
+                    <p className="text-lg font-bold text-foreground">Upload a video file</p>
+                    <p className="mt-1 text-sm text-muted-foreground">MP4 or MOV, max {MAX_FILE_SIZE_MB}MB</p>
+                  </div>
+                  <div
+                    className="flex min-w-[200px] flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card p-8 transition-all hover:border-primary hover:shadow-lg"
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <input
+                      ref={cameraInputRef}
+                      type="file"
+                      accept="video/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={onFileSelected}
+                    />
+                    <p className="text-lg font-bold text-foreground">Record directly</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Use camera (e.g. 30 FPS, 480p–720p)</p>
+                  </div>
                 </div>
               ) : (
                 <div className="rounded-lg border bg-card p-6 space-y-4">
