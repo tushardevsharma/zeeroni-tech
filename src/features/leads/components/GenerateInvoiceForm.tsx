@@ -152,11 +152,12 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
     let discount = form.getValues("summary.discount") || 0;
     const advancePaid = form.getValues("summary.advancePaid") || 0;
 
-    // Subtotal from current item amounts (amount is editable; qty/unitRate onChange set amount for their item)
+    // Subtotal from qty × unit rate; amount is always computed (read-only in UI)
     let newSubtotal = 0;
-    currentItems.forEach((item) => {
-      const amount = typeof item.amount === "number" && !Number.isNaN(item.amount) ? item.amount : Math.ceil(item.qty * item.unitRate);
-      newSubtotal += amount;
+    currentItems.forEach((item, index) => {
+      const itemAmount = Math.ceil((item.qty ?? 0) * (item.unitRate ?? 0));
+      form.setValue(`items.${index}.amount`, itemAmount);
+      newSubtotal += itemAmount;
     });
     newSubtotal = Math.ceil(newSubtotal);
 
@@ -585,30 +586,23 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
                             form.setValue(`items.${index}.amount`, Math.ceil(qty * rate));
                             calculateSummary();
                           }}
-                          disabled={invoiceType !== "Custom" && index === 0}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.amount`}
-                  render={({ field: amountField }) => (
-                    <FormItem>
-                      <FormLabel>Amount</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...amountField}
-                          onChange={(e) => amountField.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      value={form.watch(`items.${index}.amount`) ?? ""}
+                      readOnly
+                      className="bg-muted"
+                    />
+                  </FormControl>
+                </FormItem>
                 {((invoiceType === "Custom" && fields.length > 1) || (invoiceType !== "Custom" && index > 0)) && (
                   <Button type="button" variant="destructive" size="icon" onClick={() => { remove(index); calculateSummary(); }}>
                     <Trash2 className="h-4 w-4" />
@@ -714,8 +708,7 @@ export const GenerateInvoiceForm: FC<GenerateInvoiceFormProps> = ({ lead }) => {
                         const currentItems = form.getValues("items");
                         let subtotal = 0;
                         currentItems.forEach((item) => {
-                          const amount = typeof item.amount === "number" && !Number.isNaN(item.amount) ? item.amount : Math.ceil(item.qty * item.unitRate);
-                          subtotal += amount;
+                          subtotal += Math.ceil((item.qty ?? 0) * (item.unitRate ?? 0));
                         });
                         subtotal = Math.ceil(subtotal);
                         const totalInvoiceValueTarget = balanceDueVal + advancePaid;
