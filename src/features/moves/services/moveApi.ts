@@ -100,13 +100,13 @@ export function createMoveService(getToken: () => string | null) {
       await checkResp(res);
       const list = await res.json();
       return (Array.isArray(list) ? list : []).map((m: Record<string, unknown>) => ({
-        id: m.id,
-        leadId: m.leadId,
-        leadName: m.customerName ?? m.leadName ?? "",
+        id: String(m.id ?? ""),
+        leadId: String(m.leadId ?? ""),
+        leadName: String(m.customerName ?? m.leadName ?? ""),
         status: toUiStatus(String(m.status ?? "LeadConverted")),
-        moveDate: m.moveDate ?? "",
-        createdAt: m.createdAt ?? "",
-        updatedAt: m.updatedAt ?? "",
+        moveDate: String(m.moveDate ?? ""),
+        createdAt: String(m.createdAt ?? ""),
+        updatedAt: String(m.updatedAt ?? ""),
         isActive: m.isActive !== false,
       }));
     },
@@ -190,13 +190,13 @@ export function createMoveService(getToken: () => string | null) {
       await checkResp(res);
       const list = await res.json();
       return (Array.isArray(list) ? list : []).map((h: Record<string, unknown>) => ({
-        id: h.id,
-        moveId: h.moveId,
-        address: h.address ?? "",
+        id: String(h.id ?? ""),
+        moveId: String(h.moveId ?? ""),
+        address: String(h.address ?? ""),
         type: (typeof h.houseType === "string" ? h.houseType : ["Source", "Destination", "Storage"][Number(h.houseType)] ?? "Source") as HouseType,
         floor: Number(h.floor) ?? 0,
         hasLift: h.hasLift === true,
-        notes: h.notes,
+        notes: h.notes as string | undefined,
       }));
     },
 
@@ -235,13 +235,13 @@ export function createMoveService(getToken: () => string | null) {
       await checkResp(res);
       const list = await res.json();
       return (Array.isArray(list) ? list : []).map((r: Record<string, unknown>) => ({
-        id: r.id,
-        houseId: r.houseId,
-        name: r.roomName ?? r.name ?? "",
-        notes: r.notes,
+        id: String(r.id ?? ""),
+        houseId: String(r.houseId ?? ""),
+        name: String(r.roomName ?? r.name ?? ""),
+        notes: r.notes as string | undefined,
         isActive: r.isActive !== false,
-        videoAnalysisStatus: r.videoAnalysisStatus,
-        detectedItemsCount: r.detectedItemsCount,
+        videoAnalysisStatus: r.videoAnalysisStatus as MoveRoom["videoAnalysisStatus"],
+        detectedItemsCount: r.detectedItemsCount as number | undefined,
       }));
     },
 
@@ -281,13 +281,13 @@ export function createMoveService(getToken: () => string | null) {
       return (Array.isArray(list) ? list : []).map((i: Record<string, unknown>) =>
         mapItemStatus(
           {
-            inventoryItemId: i.inventoryItemId,
-            currentRoomId: i.currentRoomId,
-            isPacked: i.isPacked,
-            packedAt: i.packedAt,
-            isHighValue: i.isHighValue,
-            isFragile: i.isFragile,
-            packedByUserId: i.packedByUserId,
+            inventoryItemId: String(i.inventoryItemId ?? ""),
+            currentRoomId: i.currentRoomId as string | undefined,
+            isPacked: i.isPacked as boolean | undefined,
+            packedAt: i.packedAt as string | undefined,
+            isHighValue: i.isHighValue as boolean | undefined,
+            isFragile: i.isFragile as boolean | undefined,
+            packedByUserId: i.packedByUserId as string | undefined,
           },
           roomId,
         ),
@@ -316,7 +316,7 @@ export function createMoveService(getToken: () => string | null) {
         method: "PUT",
         headers: headers(),
         body: JSON.stringify({
-          currentRoomId: updates.roomId ?? updates.currentRoomId ?? undefined,
+          currentRoomId: updates.roomId ?? undefined,
           isPacked: updates.isPacked,
           packedAt: updates.packedAt,
           isHighValue: updates.isHighValue,
@@ -403,12 +403,12 @@ export function createMoveService(getToken: () => string | null) {
       const list = await res.json();
       return (Array.isArray(list) ? list : []).map((p: Record<string, unknown>) =>
         mapPhoto({
-          id: p.id,
-          inventoryItemId: p.inventoryItemId ?? inventoryItemId,
-          photoUrl: p.photoUrl,
-          photoType: p.photoType,
-          capturedBy: p.capturedBy,
-          capturedAt: p.capturedAt ?? p.createdAt,
+          id: String(p.id ?? ""),
+          inventoryItemId: String(p.inventoryItemId ?? inventoryItemId),
+          photoUrl: String(p.photoUrl ?? ""),
+          photoType: p.photoType as string | undefined,
+          capturedBy: p.capturedBy as string | undefined,
+          capturedAt: (p.capturedAt ?? p.createdAt) as string | undefined,
         }),
       );
     },

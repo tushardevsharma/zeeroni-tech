@@ -597,9 +597,14 @@ const Landing = () => {
               <img src={zeeroniLogo} alt="Zeeroni" className="h-8" />
               <span className="font-display font-bold text-lg text-foreground">Zeeroni</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2026 Zeeroni. All rights reserved.
-            </p>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">
+                © 2026 Zeeroni. All rights reserved.
+              </p>
+              <p className="text-xs text-muted-foreground/70 mt-1">
+                Zeeroni is a product of Khar Meets Gundruk Tech Private Limited.
+              </p>
+            </div>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms</a>

@@ -12,8 +12,11 @@ const Login = () => {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
 
+  const DUMMY_OTP = '123456';
+
   const handleSendOTP = () => {
     if (phone.length >= 10) {
+      setOtp(DUMMY_OTP);
       setStep('otp');
     }
   };
